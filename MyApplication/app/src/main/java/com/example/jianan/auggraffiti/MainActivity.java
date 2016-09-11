@@ -1,9 +1,7 @@
 package com.example.jianan.auggraffiti;
 
 
-import android.app.DownloadManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -80,23 +78,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url ="http://www.google.com";
+            String url ="http://roblkw.com/msa/login.php";
 
             // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            final Map<String,String> params = new HashMap<String,String>();
+            params.put("email", personEmail);
+
+
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
 
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             // Display the first 500 characters of the response string.
-                            mTextView.setText("Response is: "+ response.substring(0,500));
+                            mTextView.setText("Response is: "+ response);
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     mTextView.setText("That didn't work!");
                 }
-            });
+            }){
+                @Override
+                protected Map<String, String> getParams() {
+                    return params;
+                }
+            };
+            //stringRequest.getParams();
             // Add the request to the RequestQueue.
             queue.add(stringRequest);
 
