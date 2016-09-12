@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MyApplication</string>
+    <string name="map_type_none">None</string>
+    <string name="map_type_normal">Normal</string>
+    <string name="map_type_terrain">Terrian</string>
+    <string name="map_type_satellite">Satellite</string>
+    <string name="map_type_hybrid">Hybrid</string>
+
 </resources>
