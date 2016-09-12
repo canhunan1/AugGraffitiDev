@@ -92,7 +92,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         @Override
                         public void onResponse(String response) {
                             // Display the first 500 characters of the response string.
-                            mTextView.setText("Response is: "+ response);
+
+                            if(response.equals("0")) {
+                                Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+                                startActivity(intent);
+
+                            }
+                            else
+                                mTextView.setText("Fail to sign in");
                         }
                     }, new Response.ErrorListener() {
                 @Override
