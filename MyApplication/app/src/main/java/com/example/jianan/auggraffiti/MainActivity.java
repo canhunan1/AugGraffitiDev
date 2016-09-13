@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private GoogleApiClient googleApiClient;
     private GoogleSignInOptions signInOptions;
     private static final String TAG = "MyActivity";
-
+    private String personEmail;
+    public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,44 +75,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             name.setText(account.getDisplayName());
 
-            String personEmail = account.getEmail();
-
+            personEmail = account.getEmail();
+//            final Map<String,String> params = new HashMap<String,String>();
+//            params.put("email", personEmail);
+//            new StringPost("/login.php",
+//                    new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            if(response.equals("0")) {
+//                                Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+//                                startActivity(intent);
+//                            }
+//                            else
+//                                mTextView.setText("Fail to sign in");
+//                        }},
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            mTextView.setText("That didn't work!");
+//                        }},
+//                    params)
+//                    .sendRequest(this);
             // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(this);
             String url ="http://roblkw.com/msa/login.php";
-
-            // Request a string response from the provided URL.
             final Map<String,String> params = new HashMap<String,String>();
             params.put("email", personEmail);
-
-
-
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            // Display the first 500 characters of the response string.
-
-                            if(response.equals("0")) {
-                                Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
-                                startActivity(intent);
-
-                            }
-                            else
-                                mTextView.setText("Fail to sign in");
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    mTextView.setText("That didn't work!");
-                }
-            }){
-                @Override
-                protected Map<String, String> getParams() {
-                    return params;
-                }
-            };
+            // Request a string response from the provided URL.
+            StringRequest stringRequest = postStringRequest(params, url);
             //stringRequest.getParams();
             // Add the request to the RequestQueue.
             queue.add(stringRequest);
@@ -122,8 +113,46 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
+    @NonNull
+    private StringRequest postStringRequest(final Map<String,String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+
+                        if(response.equals("0")) {
+                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+                            startActivity(intent);
+
+                        }
+                        else
+                            mTextView.setText("Fail to sign in");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    public void sendMessage() {
+        Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        String message = personEmail;
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 }

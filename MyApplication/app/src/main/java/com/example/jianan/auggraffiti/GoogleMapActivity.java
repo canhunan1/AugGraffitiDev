@@ -1,6 +1,7 @@
 package com.example.jianan.auggraffiti;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,6 +17,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,14 +34,20 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
    private GoogleMap mGoogleMap;
     private GoogleApiClient mGoogleApiClinet;
+    private List<String> tagList;
     final String tag ="GoogleMapActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +118,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,zoom);
         mGoogleMap.moveCamera(update);
     }
-
+    Marker marker;
     public void geoLocate(View view) throws IOException {
         EditText et = (EditText) findViewById(R.id.editText);
         String location = et.getText().toString();
@@ -118,6 +131,21 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         double lng = address.getLongitude();
         goToLocationZoom(lat, lng,15);
 
+
+
+    }
+
+    private void setMarker(double lat, double lng) {
+        if(marker != null){
+            marker.remove();
+        }
+        MarkerOptions options = new MarkerOptions()
+                                //.title(locality)
+                                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name))
+                                .position(new LatLng(lat,lng))
+                                .snippet("I am here");
+        marker = mGoogleMap.addMarker(options);
     }
 
     @Override
@@ -183,9 +211,61 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         if(location == null){
             Toast.makeText(this,"Cant get current location", Toast.LENGTH_LONG).show();
         }else{
-            LatLng ll = new LatLng(location.getLatitude(),location.getLongitude());
+            Double lat = location.getLatitude();
+            Double lng = location.getLongitude();
+            LatLng ll = new LatLng(lat,lng);
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,15);
             mGoogleMap.animateCamera(update);
+            setMarker(lat,lng);
+            //get the tag information here
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url ="http://roblkw.com/msa/neartags.php";
+            final Map<String,String> params = new HashMap<String,String>();
+            Intent intent = getIntent();
+            String personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+            params.put("email", personEmail);
+            params.put("loc_long",lng.toString());
+            params.put("loc_lat",lat.toString());
+            // Request a string response from the provided URL.
+            StringRequest stringRequest = postStringRequest(params, url);
+            queue.add(stringRequest);
+
         }
+
+
+
+    }
+
+    private StringRequest postStringRequest(final Map<String,String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response==null){
+                            Log.v(tag,"response is null");
+                        }
+                        else if(response.equals("0")) {
+                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+                            startActivity(intent);
+
+                        }
+                        else{
+                            Log.v(tag,response);
+                        }
+                            //mTextView.setText("Fail to sign in");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
     }
 }
