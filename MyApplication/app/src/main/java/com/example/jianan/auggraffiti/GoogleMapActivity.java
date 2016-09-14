@@ -243,6 +243,10 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        if(response.equals(""))
+                            Log.v(tag,"no tag nearby");
+                        else
+                            Log.v(tag,response);
                         if(response==null){
                             Log.v(tag,"response is null");
                         }
