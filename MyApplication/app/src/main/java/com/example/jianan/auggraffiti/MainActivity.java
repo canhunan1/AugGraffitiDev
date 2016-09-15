@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private GoogleSignInOptions signInOptions;
     private static final String TAG = "MyActivity";
     private String personEmail;
-    public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+    public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.MainActivity.MESSAGE";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,8 +123,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         // Display the first 500 characters of the response string.
 
                         if(response.equals("0")) {
-                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
-                            startActivity(intent);
+                            /*Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+                            startActivity(intent);*/
+                            sendMessage(personEmail);
 
                         }
                         else
@@ -148,10 +149,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
-    public void sendMessage() {
+    public void sendMessage(String message) {
         Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
         //EditText editText = (EditText) findViewById(R.id.edit_message);
-        String message = personEmail;
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
