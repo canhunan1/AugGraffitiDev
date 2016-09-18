@@ -41,14 +41,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
-   private GoogleMap mGoogleMap;
+public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
+    private GoogleMap mGoogleMap;
     private GoogleApiClient mGoogleApiClinet;
-    private List<String> tagList;
     final String tag ="GoogleMapActivity";
+    private LocationRequest mLocationRequest;
+    private List<Tag> tagList = null;
+    public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.MainActivity.MESSAGE";
+    private  Marker placeMarker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,15 +92,15 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         //goToLocationZoom(33.4363619,-111.927875,30);
-      /* if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-           Log.v(tag,"before if");
-           if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-               Log.v(tag,"not get permission");
-               return;
-           }
-           Log.v(tag,"get permission");
-        }
-        mGoogleMap.setMyLocationEnabled(true);*/
+//       if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+//           Log.v(tag,"before if");
+//           if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//               Log.v(tag,"not get permission");
+//               return;
+//           }
+//           Log.v(tag,"get permission");
+//        }
+//        mGoogleMap.setMyLocationEnabled(true);
 
         mGoogleApiClinet = new GoogleApiClient.Builder(this)
                                     .addApi(LocationServices.API)
@@ -104,6 +108,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     .addOnConnectionFailedListener(this)
                                     .build();
         mGoogleApiClinet.connect();
+        mGoogleMap.setOnMarkerClickListener(this);
 
     }
 
@@ -118,7 +123,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,zoom);
         mGoogleMap.moveCamera(update);
     }
-    Marker marker;
+
     public void geoLocate(View view) throws IOException {
         EditText et = (EditText) findViewById(R.id.editText);
         String location = et.getText().toString();
@@ -130,22 +135,27 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         double lat = address.getLatitude();
         double lng = address.getLongitude();
         goToLocationZoom(lat, lng,15);
-
-
-
     }
 
-    private void setMarker(double lat, double lng) {
-        if(marker != null){
-            marker.remove();
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        switch( marker.getTitle()) {
+            case "Collect":
+                Toast.makeText(this, "Collect has been clicked ",
+                    Toast.LENGTH_SHORT).show();
+                sendMessage("Collect");
+                break;
+            case "Place":
+                Toast.makeText(this, "Place has been clicked ",
+                        Toast.LENGTH_SHORT).show();
+                sendMessage("Place");
+                break;
         }
-        MarkerOptions options = new MarkerOptions()
-                                //.title(locality)
-                                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name))
-                                .position(new LatLng(lat,lng))
-                                .snippet("I am here");
-        marker = mGoogleMap.addMarker(options);
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
     }
 
     @Override
@@ -177,7 +187,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         return super.onOptionsItemSelected(item);
     }
 
-    LocationRequest mLocationRequest;
+
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -214,9 +224,9 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             Double lat = location.getLatitude();
             Double lng = location.getLongitude();
             LatLng ll = new LatLng(lat,lng);
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,15);
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,19);
             mGoogleMap.animateCamera(update);
-            setMarker(lat,lng);
+            setPlaceMarker(lat,lng);
             //get the tag information here
 
             RequestQueue queue = Volley.newRequestQueue(this);
@@ -232,9 +242,27 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             queue.add(stringRequest);
 
         }
-
-
-
+    }
+    private void setPlaceMarker(double lat, double lng) {
+        MarkerOptions optionsPlace = new MarkerOptions()
+                .title("Place")
+                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name))
+                .position(new LatLng(lat,lng))
+                .snippet("Clicking me to place a tag");
+        placeMarker = mGoogleMap.addMarker(optionsPlace);
+    }
+    private Marker setCollectMarker(LatLng ll/*,  Marker collectMarker*/) {
+//        if(collectMarker != null){
+//            collectMarker.remove();
+//        }
+        MarkerOptions optionsCollect = new MarkerOptions()
+                .title("Collect")
+                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
+                .position(ll)
+                .snippet("Clicking me to collect a tag");
+        return mGoogleMap.addMarker(optionsCollect);
     }
 
     private StringRequest postStringRequest(final Map<String,String> params, final String url) {
@@ -242,11 +270,29 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
                 new Response.Listener<String>() {
                     @Override
+                    // no idea why enter in this function 3 times when just sending GPS information just once.
                     public void onResponse(String response) {
-                        if(response.equals(""))
-                            Log.v(tag,"no tag nearby");
-                        else
-                            Log.v(tag,response);
+                        //The format of the response is "tagId,Latitude,Longitude"
+                        String[] tagLoc = response.trim().split("[,]+");
+                        //First we assume the format of the response never changed and the response we get is always correct
+                        //then we can get the numb int numTag = 0;
+                        int numTag = tagLoc.length%3==0?tagLoc.length/3:-1;
+                        if(tagList == null){
+                            tagList = new LinkedList<Tag>();
+                        }
+                        int i = numTag;
+                        while(--i >=0) {//we have tags near by
+                            //  double lat = Double.valueOf(tagLoc[numTag * 3 + 1]);
+                            // LatLng ll = new LatLng(Double.valueOf(tagLoc[numTag * 3 + 1]), Double.valueOf(tagLoc[numTag * 3 + 2]));
+                            tagList.add(new Tag(Integer.valueOf(tagLoc[i * 3]), new LatLng(Double.valueOf(tagLoc[i * 3 + 2]), Double.valueOf(tagLoc[i * 3 + 1]))));
+                            setCollectMarker(tagList.get(numTag - i- 1).ll);
+                        }
+                        //how to check if the response is correct?
+                        //First the number is in ascending order.followed by 2 float number.
+                        //Here we assume the number of the location must be integer. And the location must be float.
+                        //If not something is wrong we need to throw that location away.
+                        //  Log.v(tag,"the length of the tagLoc is" + String.valueOf(tagLoc.length));
+
                         if(response==null){
                             Log.v(tag,"response is null");
                         }
@@ -271,5 +317,23 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 return params;
             }
         };
+    }
+
+    public void sendMessage(String activity) {
+        Intent intent = null;
+        switch (activity){
+            case "Collect":
+                 intent = new Intent(getApplicationContext(), PlaceActivity.class);
+                break;
+            case "Place":
+                intent = new Intent(getApplicationContext(), PlaceActivity.class);
+                break;
+        }
+        if(intent != null) {
+            //EditText editText = (EditText) findViewById(R.id.edit_message);
+            intent.putExtra(EXTRA_MESSAGE, "");
+            startActivity(intent);
+        }
+
     }
 }
