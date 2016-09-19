@@ -28,21 +28,21 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />-->
 
-   <EditText
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/editText"
-       android:inputType="none"
-       android:gravity="center_horizontal"
-       android:hint="Where do u want to go" />
+   <!--<EditText-->
+       <!--android:layout_width="match_parent"-->
+       <!--android:layout_height="wrap_content"-->
+       <!--android:id="@+id/editText"-->
+       <!--android:inputType="none"-->
+       <!--android:gravity="center_horizontal"-->
+       <!--android:hint="Where do u want to go" />-->
 
-   <Button
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="GO"
-       android:id="@+id/button"
-       android:layout_gravity="center_horizontal"
-       android:onClick="geoLocate" />
+   <!--<Button-->
+       <!--android:layout_width="wrap_content"-->
+       <!--android:layout_height="wrap_content"-->
+       <!--android:text="GO"-->
+       <!--android:id="@+id/button"-->
+       <!--android:layout_gravity="center_horizontal"-->
+       <!--android:onClick="geoLocate" />-->
 
    <fragment
        android:layout_width="match_parent"
