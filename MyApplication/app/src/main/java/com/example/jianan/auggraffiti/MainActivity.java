@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
         login = (SignInButton) findViewById(R.id.login);
        // name = (TextView) findViewById(R.id.name);
-        mTextView = (TextView) findViewById(R.id.text);
+       // mTextView = (TextView) findViewById(R.id.text);
         login.setSize(SignInButton.SIZE_WIDE);
         login.setScopes(signInOptions.getScopeArray());
 
