@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -40,16 +41,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
 
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
         login = (SignInButton) findViewById(R.id.login);
-        name = (TextView) findViewById(R.id.name);
+       // name = (TextView) findViewById(R.id.name);
         mTextView = (TextView) findViewById(R.id.text);
         login.setSize(SignInButton.SIZE_WIDE);
         login.setScopes(signInOptions.getScopeArray());
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount account = result.getSignInAccount();
 
-            name.setText(account.getDisplayName());
+          //  name.setText(account.getDisplayName());
 
             personEmail = account.getEmail();
 //            final Map<String,String> params = new HashMap<String,String>();
@@ -106,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             //stringRequest.getParams();
             // Add the request to the RequestQueue.
             queue.add(stringRequest);
-
-
             Log.v(TAG,personEmail);
         }
 

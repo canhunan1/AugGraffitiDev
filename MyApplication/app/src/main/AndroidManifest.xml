@@ -10,6 +10,10 @@
         android:name="com.example.jianan.auggraffiti.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
+    <permission
+        android:name="com.example.jianan.auggraffiti.permission.ACCESS_FINE_LOCATION"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="com.example.jianan.auggraffiti.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permissions.READ_GSERVICES" />
 
@@ -25,13 +29,18 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="18" />
     -->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--android:theme="@style/AppTheme">-->
+
         <activity android:name=".MainActivity">
+            <!--android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">-->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,5 +59,6 @@
         <activity android:name=".CollectActivity" />
         <activity android:name=".PlaceActivity"></activity>
     </application>
+
 
 </manifest>

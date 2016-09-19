@@ -3,8 +3,6 @@ package com.example.jianan.auggraffiti;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,8 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -39,7 +36,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,11 +49,15 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     private List<Tag> tagList = null;
     public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.MainActivity.MESSAGE";
     private  Marker placeMarker;
+    private Double lat =0.0;
+    private Double lng =0.0;
+    final int MY_PERMISSION_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if(googleServiceAvailable()){
-            Toast.makeText(this,"Perfect", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this,"Perfect", Toast.LENGTH_SHORT).show();
             setContentView(R.layout.activity_google_map);
             initMap();
         }else{
@@ -70,9 +70,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         mapFragment.getMapAsync(this);
     }
 
-    /*
-    *
-    * */
+
     public boolean googleServiceAvailable(){
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int isAvailable = api.isGooglePlayServicesAvailable(this);
@@ -102,40 +100,99 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 //        }
 //        mGoogleMap.setMyLocationEnabled(true);
 
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//
+//            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+//
+//                // Show an expanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//            } else {
+//
+//                // No explanation needed, we can request the permission.
+//
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                        MY_PERMISSION_CODE);
+//
+//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//                // app-defined int constant. The callback method gets the
+//                // result of the request.
+//            }
+//        }
+
         mGoogleApiClinet = new GoogleApiClient.Builder(this)
-                                    .addApi(LocationServices.API)
-                                    .addConnectionCallbacks(this)
-                                    .addOnConnectionFailedListener(this)
-                                    .build();
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
         mGoogleApiClinet.connect();
         mGoogleMap.setOnMarkerClickListener(this);
 
-    }
 
-    private void goToLocation(double lat, double lng) {
-        LatLng ll = new LatLng(lat,lng);
-        CameraUpdate update = CameraUpdateFactory.newLatLng(ll);
-        mGoogleMap.moveCamera(update);
-    }
 
-    private void goToLocationZoom(double lat, double lng, int zoom) {
-        LatLng ll = new LatLng(lat,lng);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,zoom);
-        mGoogleMap.moveCamera(update);
     }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case MY_PERMISSION_CODE: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    // permission was granted, yay! Do the
+//                    // contacts-related task you need to do.
+//                    mGoogleApiClinet = new GoogleApiClient.Builder(this)
+//                            .addApi(LocationServices.API)
+//                            .addConnectionCallbacks(this)
+//                            .addOnConnectionFailedListener(this)
+//                            .build();
+//                    mGoogleApiClinet.connect();
+//                    mGoogleMap.setOnMarkerClickListener(this);
+//
+//                } else {
+//
+//                    // permission denied, boo! Disable the
+//                    // functionality that depends on this permission.
+//                    Toast.makeText(this, "The application can't use your location, please set it", Toast.LENGTH_SHORT).show();                }
+//                return;
+//            }
+//
+//            // other 'case' lines to check for other
+//            // permissions this app might request
+//        }
+//    }
 
-    public void geoLocate(View view) throws IOException {
-        EditText et = (EditText) findViewById(R.id.editText);
-        String location = et.getText().toString();
-        Geocoder gc = new Geocoder(this);
-        List<Address> list = gc.getFromLocationName(location,1);
-        Address address = list.get(0);
-        String locality = address.getLocality();
-        Toast.makeText(this, locality, Toast.LENGTH_SHORT).show();
-        double lat = address.getLatitude();
-        double lng = address.getLongitude();
-        goToLocationZoom(lat, lng,15);
-    }
+//    private void goToLocation(double lat, double lng) {
+//        LatLng ll = new LatLng(lat,lng);
+//        CameraUpdate update = CameraUpdateFactory.newLatLng(ll);
+//        mGoogleMap.moveCamera(update);
+//    }
+//
+//    private void goToLocationZoom(double lat, double lng, int zoom) {
+//        LatLng ll = new LatLng(lat,lng);
+//        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,zoom);
+//        mGoogleMap.moveCamera(update);
+//    }
+
+//    public void geoLocate(View view) throws IOException {
+//        EditText et = (EditText) findViewById(R.id.editText);
+//        String location = et.getText().toString();
+//        Geocoder gc = new Geocoder(this);
+//        List<Address> list = gc.getFromLocationName(location,1);
+//        Address address = list.get(0);
+//        String locality = address.getLocality();
+//        Toast.makeText(this, locality, Toast.LENGTH_SHORT).show();
+//        double lat = address.getLatitude();
+//        double lng = address.getLongitude();
+//        goToLocationZoom(lat, lng,15);
+//    }
 
 
     @Override
@@ -223,31 +280,38 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }else{
             Double lat = location.getLatitude();
             Double lng = location.getLongitude();
-            LatLng ll = new LatLng(lat,lng);
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,19);
-            mGoogleMap.animateCamera(update);
-            setPlaceMarker(lat,lng);
-            //get the tag information here
+            if(Math.abs(this.lat-lat)>0.000001&&Math.abs(this.lng-lng)>0.000001) {
+                this.lat = lat;
+                this.lng = lng;
+                LatLng ll = new LatLng(lat, lng);
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 19);
+                mGoogleMap.animateCamera(update);
+                setPlaceMarker(lat, lng);
+                //get the tag information here
 
-            RequestQueue queue = Volley.newRequestQueue(this);
-            String url ="http://roblkw.com/msa/neartags.php";
-            final Map<String,String> params = new HashMap<String,String>();
-            Intent intent = getIntent();
-            String personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-            params.put("email", personEmail);
-            params.put("loc_long",lng.toString());
-            params.put("loc_lat",lat.toString());
-            // Request a string response from the provided URL.
-            StringRequest stringRequest = postStringRequest(params, url);
-            queue.add(stringRequest);
+                RequestQueue queue = Volley.newRequestQueue(this);
+                String url = "http://roblkw.com/msa/neartags.php";
+                final Map<String, String> params = new HashMap<String, String>();
+                Intent intent = getIntent();
+                String personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+                params.put("email", personEmail);
+                params.put("loc_long", lng.toString());
+                params.put("loc_lat", lat.toString());
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = postStringRequest(params, url);
+                queue.add(stringRequest);
+            }
 
         }
     }
     private void setPlaceMarker(double lat, double lng) {
+        if(placeMarker != null){
+            placeMarker.remove();
+        }
         MarkerOptions optionsPlace = new MarkerOptions()
                 .title("Place")
                 //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pm))
                 .position(new LatLng(lat,lng))
                 .snippet("Clicking me to place a tag");
         placeMarker = mGoogleMap.addMarker(optionsPlace);
@@ -259,7 +323,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         MarkerOptions optionsCollect = new MarkerOptions()
                 .title("Collect")
                 //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.c))
                 .position(ll)
                 .snippet("Clicking me to collect a tag");
         return mGoogleMap.addMarker(optionsCollect);
