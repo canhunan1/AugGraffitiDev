@@ -1,6 +1,9 @@
 # AugGraffitiDev
 ## Author
 By Jianan Yang and Wenhao Chen
+## Summary
+AugGraffiti is a mobile application on the Android for users to create their own Graffiti on there mobile device. 
+
 ## Install
 Download AugGraffitiDev\MyApplication\app\app-release.apk to your phone and make sure you allow permission to use your location.
 ##Developement
@@ -14,5 +17,4 @@ debug {
         }
 ```
 ##
-## Summary
-AugGraffiti is a mobile application on the Android for users to create their own Graffiti on there mobile device. 
+
