@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,11 +68,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            GoogleSignInAccount account = result.getSignInAccount();
+
             //to make sure continue to the next screen if the sign failed for unknown reason
-            if(account!=null) {
+            if(result.isSuccess()) {
+                GoogleSignInAccount account = result.getSignInAccount();
                 personEmail = account.getEmail();
-            }
+
 //            final Map<String,String> params = new HashMap<String,String>();
 //            params.put("email", personEmail);
 //            new StringPost("/login.php",
@@ -102,6 +105,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 // Add the request to the RequestQueue.
                 queue.add(stringRequest);
                 Log.v(TAG, personEmail);
+            }
+            else{
+                Status status= result.getStatus();
+                Toast.makeText(this,status.toString(), Toast.LENGTH_LONG).show();
+            }
 
         }
     }
