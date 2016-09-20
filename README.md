@@ -16,5 +16,7 @@ debug {
             storePassword '940205'
         }
 ```
-##
+## App structure
+A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, only Login and Map screen has been developed and is available for user (I mean for grader!) to play with.
+![alt tag](C:\Users\Wenhao\Downloads\LogIn)
 
