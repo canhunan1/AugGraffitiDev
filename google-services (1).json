@@ -13,19 +13,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "139008586805-f3aha8g3jmhsurldmf1nb22riac03p17.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.jianan.auggraffiti",
-            "certificate_hash": "A9272D12AC08A8D296D303080C2C0A106D36EE43"
-          }
-        },
-        {
-          "client_id": "139008586805-g6l5cc2el177tqr3hofhm1t8ukglprt5.apps.googleusercontent.com",
+          "client_id": "139008586805-lfnnifk4f745slb6ro08r0nuj01mphnl.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.jianan.auggraffiti",
             "certificate_hash": "7B69FBF524F8E7582AE9252D4B86A0C6C4547BC4"
+          }
+        },
+        {
+          "client_id": "139008586805-nk8qbotgll31f9qvcevtb8vdh1f7b4ul.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jianan.auggraffiti",
+            "certificate_hash": "A9272D12AC08A8D296D303080C2C0A106D36EE43"
           }
         },
         {
