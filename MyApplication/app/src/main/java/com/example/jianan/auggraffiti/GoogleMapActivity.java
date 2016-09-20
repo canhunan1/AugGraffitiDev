@@ -280,7 +280,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-        mLocationRequest.setInterval(30000);
+        mLocationRequest.setInterval(10000);
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
             Log.v(tag,"before if");
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
