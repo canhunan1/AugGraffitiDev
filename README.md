@@ -2,7 +2,7 @@
 ## Author
 By Jianan Yang and Wenhao Chen
 ## Install
-Download AugGraffitiDev\MyApplication\app to your phone and make sure you allow permission to use your location.
+Download AugGraffitiDev\MyApplication\app\app-release.apk to your phone and make sure you allow permission to use your location.
 ##Developement
 To develope, you need to confingure the build.gradle (app) firstly. You need to change directory ```storeFile file('D:/asu/asu/EEE598/AugGraffitiDev/keystore.jks')``` to your local directory
 ```
