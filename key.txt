@@ -1,0 +1,26 @@
+Alias name: AugGraffiti
+Creation date: Sep 20, 2016
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=Jianan Yang
+Issuer: CN=Jianan Yang
+Serial number: 4ab081fe
+Valid from: Tue Sep 20 01:24:38 MST 2016 until: Sat Sep 14 01:24:38 MST 2041
+Certificate fingerprints:
+	 MD5:  ED:43:95:B4:28:18:AA:9B:7F:EC:04:4E:DA:A8:2E:DD
+	 SHA1: A9:27:2D:12:AC:08:A8:D2:96:D3:03:08:0C:2C:0A:10:6D:36:EE:43
+	 SHA256: E6:E6:9D:23:7F:28:A0:E6:75:04:0C:3B:A0:09:C6:DC:9C:C2:9E:09:6A:58:0A:F3:1D:27:A3:31:05:2C:0C:B6
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 96 B3 AF E7 A9 EC 44 31   BE 96 ED A7 0D 78 35 F5  ......D1.....x5.
+0010: 89 FB 05 11                                        ....
+]
+]
+

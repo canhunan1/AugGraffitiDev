@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "102517233270",
+    "project_id": "auggraffiti-90c07"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102517233270:android:4587d2e1d74c5eac",
+        "android_client_info": {
+          "package_name": "com.example.jianan.auggraffiti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102517233270-3obevvd9lrakk7lt0v2ad1jutjjqhjcb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jianan.auggraffiti",
+            "certificate_hash": "7B69FBF524F8E7582AE9252D4B86A0C6C4547BC4"
+          }
+        },
+        {
+          "client_id": "102517233270-14934v7f27bje1028f6ervucrmvrnadk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0DRc8yUGOzoG0iD2jZ5ninrBdI_0NV8s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

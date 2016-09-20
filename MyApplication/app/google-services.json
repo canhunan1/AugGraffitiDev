@@ -1,19 +1,27 @@
 {
   "project_info": {
-    "project_number": "102517233270",
-    "project_id": "auggraffiti-90c07"
+    "project_number": "139008586805",
+    "project_id": "premium-valor-142801"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:102517233270:android:4587d2e1d74c5eac",
+        "mobilesdk_app_id": "1:139008586805:android:4587d2e1d74c5eac",
         "android_client_info": {
           "package_name": "com.example.jianan.auggraffiti"
         }
       },
       "oauth_client": [
         {
-          "client_id": "102517233270-3obevvd9lrakk7lt0v2ad1jutjjqhjcb.apps.googleusercontent.com",
+          "client_id": "139008586805-taafb4ca1rs7v8m5tr3trkqcdrhv6o0n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jianan.auggraffiti",
+            "certificate_hash": "A9272D12AC08A8D296D303080C2C0A106D36EE43"
+          }
+        },
+        {
+          "client_id": "139008586805-rn3a1il1k0o7j4fmdmn2ija3dkcq4snv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.jianan.auggraffiti",
@@ -21,13 +29,13 @@
           }
         },
         {
-          "client_id": "102517233270-14934v7f27bje1028f6ervucrmvrnadk.apps.googleusercontent.com",
+          "client_id": "139008586805-dm0qaa3c5ui9rbmbrlaspp7k3d8dbvhd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD0DRc8yUGOzoG0iD2jZ5ninrBdI_0NV8s"
+          "current_key": "AIzaSyBCXBs3jAxLzUwWGpBRcYmFm0K22lWnnS4"
         }
       ],
       "services": {
