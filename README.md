@@ -16,7 +16,9 @@ debug {
             storePassword '940205'
         }
 ```
-## App structure
-A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, only Login and Map screen has been developed and is available for user (I mean for grader!) to play with.
+## User Interface
+A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, users can only interact with Login and Map screen. The other three screens will be developed and added to this app in next step.
+
+After successful installation, once you click the icon named "MyApplication" on your device, the Login screen pops up.
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692829/e482ac4c-7f51-11e6-8ffd-627f12f5cba6.JPG)
 
