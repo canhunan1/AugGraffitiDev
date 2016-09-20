@@ -9,7 +9,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.jianan.auggraffiti.MainActivity"
     android:weightSum="1"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/giraffe">
 
     <!--<TextView-->
         <!--android:id="@+id/name"-->
@@ -21,11 +22,18 @@
         <!--android:layout_height="wrap_content" />-->
 
 
+    <TextView
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.99" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/login"
-        android:layout_width="349dp"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
 
     </com.google.android.gms.common.SignInButton>
 

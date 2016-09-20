@@ -11,7 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -51,18 +54,51 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     private  Marker placeMarker;
     private Double lat =0.0;
     private Double lng =0.0;
+    private TextView score = null;
+
     final int MY_PERMISSION_CODE = 1;
+    String personEmail = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if(googleServiceAvailable()){
-           // Toast.makeText(this,"Perfect", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this,"Perfect", Toast.LENGTH_SHORT).show();
             setContentView(R.layout.activity_google_map);
             initMap();
         }else{
             // No Google map layout;
         }
+        score = (TextView) findViewById(R.id.score);
+
+        Button buttonGallery = (Button) findViewById(R.id.gallery);
+        buttonGallery.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent intent = new Intent(getApplicationContext(), GalleryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button buttonSignOut = (Button) findViewById(R.id.sign_out);
+        buttonSignOut.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Intent intent = getIntent();
+        personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://roblkw.com/msa/getscore.php";
+
+        final Map<String, String> params = new HashMap<String, String>();
+
+        params.put("email", personEmail);
+        StringRequest stringRequest = postScoreStringRequest(params, url);
+        queue.add(stringRequest);
+
     }
 
     private void initMap() {
@@ -292,13 +328,16 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 RequestQueue queue = Volley.newRequestQueue(this);
                 String url = "http://roblkw.com/msa/neartags.php";
                 final Map<String, String> params = new HashMap<String, String>();
-                Intent intent = getIntent();
-                String personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+                if(personEmail==null) {
+                    Intent intent = getIntent();
+                    personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+                }
                 params.put("email", personEmail);
                 params.put("loc_long", lng.toString());
                 params.put("loc_lat", lat.toString());
                 // Request a string response from the provided URL.
-                StringRequest stringRequest = postStringRequest(params, url);
+                StringRequest stringRequest = postTagNearByRequest(params, url);
                 queue.add(stringRequest);
             }
 
@@ -329,7 +368,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         return mGoogleMap.addMarker(optionsCollect);
     }
 
-    private StringRequest postStringRequest(final Map<String,String> params, final String url) {
+    private StringRequest postTagNearByRequest(final Map<String,String> params, final String url) {
         return new StringRequest(Request.Method.POST, url,
 
                 new Response.Listener<String>() {
@@ -363,7 +402,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                         else if(response.equals("0")) {
                             Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
                             startActivity(intent);
-
                         }
                         else{
                             Log.v(tag,response);
@@ -383,6 +421,31 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         };
     }
 
+    private StringRequest postScoreStringRequest(final Map<String,String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    // no idea why enter in this function 3 times when just sending GPS information just once.
+                    public void onResponse(String response) {
+                        Log.v(tag,response);
+                        if(score == null){
+                            score = (TextView) findViewById(R.id.score);
+                        }
+                        score.setText(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
+    }
     public void sendMessage(String activity) {
         Intent intent = null;
         switch (activity){
