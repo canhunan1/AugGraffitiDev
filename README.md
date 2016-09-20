@@ -18,5 +18,5 @@ debug {
 ```
 ## App structure
 A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, only Login and Map screen has been developed and is available for user (I mean for grader!) to play with.
-![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692597/3ac37dfe-7f50-11e6-8c64-c81014b0ed00.png)
+![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692637/a4407b74-7f50-11e6-8bff-b2d7952bba81.JPG)
 
