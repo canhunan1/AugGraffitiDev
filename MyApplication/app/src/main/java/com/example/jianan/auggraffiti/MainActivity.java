@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private GoogleApiClient googleApiClient;
     private GoogleSignInOptions signInOptions;
     private static final String TAG = "MyActivity";
-    private String personEmail;
+    private String personEmail = "jianan205@gmail.com";
+
     public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.MainActivity.MESSAGE";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +67,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if (requestCode == REQUEST_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             GoogleSignInAccount account = result.getSignInAccount();
+            //to make sure continue to the next screen if the sign failed for unknown reason
             if(account!=null) {
                 personEmail = account.getEmail();
+            }
 //            final Map<String,String> params = new HashMap<String,String>();
 //            params.put("email", personEmail);
 //            new StringPost("/login.php",
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 // Add the request to the RequestQueue.
                 queue.add(stringRequest);
                 Log.v(TAG, personEmail);
-            }
+
         }
     }
 
