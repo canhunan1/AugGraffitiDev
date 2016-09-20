@@ -69,12 +69,13 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }else{
             // No Google map layout;
         }
+        //set score text view
         score = (TextView) findViewById(R.id.score);
 
         Button buttonGallery = (Button) findViewById(R.id.gallery);
         buttonGallery.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Perform action on click
+                // When gallery button is clicked, we will switch to another screen
                 Intent intent = new Intent(getApplicationContext(), GalleryActivity.class);
                 startActivity(intent);
             }
@@ -89,7 +90,9 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
 
         Intent intent = getIntent();
+        //get user's email from main activity
         personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        //send request to get score
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://roblkw.com/msa/getscore.php";
 
@@ -98,7 +101,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         params.put("email", personEmail);
         StringRequest stringRequest = postScoreStringRequest(params, url);
         queue.add(stringRequest);
-
     }
 
     private void initMap() {
@@ -106,7 +108,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         mapFragment.getMapAsync(this);
     }
 
-
+    // Check if the google service is available
     public boolean googleServiceAvailable(){
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int isAvailable = api.isGooglePlayServicesAvailable(this);
@@ -119,7 +121,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             Toast.makeText(this,"Cant connect to google play services", Toast.LENGTH_SHORT).show();
         }
         return false;
-
     }
 
     @Override
@@ -161,7 +162,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 //                // result of the request.
 //            }
 //        }
-
+        /*use google api client to simplify the permission authorization*/
         mGoogleApiClinet = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -169,9 +170,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .build();
         mGoogleApiClinet.connect();
         mGoogleMap.setOnMarkerClickListener(this);
-
-
-
     }
 //    @Override
 //    public void onRequestPermissionsResult(int requestCode,
@@ -230,7 +228,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 //        goToLocationZoom(lat, lng,15);
 //    }
 
-
     @Override
     public boolean onMarkerClick(final Marker marker) {
         switch( marker.getTitle()) {
@@ -245,19 +242,16 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 sendMessage("Place");
                 break;
         }
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu){// to show the menu in setting
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item){//switch the type of the map
         switch(item.getItemId()){
             case R.id.mapTypeNone:
                 mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
@@ -285,18 +279,18 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        mLocationRequest.setInterval(30000);
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
             Log.v(tag,"before if");
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.v(tag,"not get permission");
+                Toast.makeText(this,"Please allow permission to access your location in the setting", Toast.LENGTH_LONG).show();
                 return;
             }
             Log.v(tag,"get permission");
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClinet,mLocationRequest, this);
-
     }
 
     @Override
@@ -310,25 +304,25 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location) {//when the location is changed
         if(location == null){
             Toast.makeText(this,"Cant get current location", Toast.LENGTH_LONG).show();
         }else{
             Double lat = location.getLatitude();
             Double lng = location.getLongitude();
-            if(Math.abs(this.lat-lat)>0.000001&&Math.abs(this.lng-lng)>0.000001) {
+            if(Math.abs(this.lat-lat)>0.000001&&Math.abs(this.lng-lng)>0.000001) {// when both the latitude and longitude is changed more than 0.0000001
+                                                                            // to limit the update of the marker
                 this.lat = lat;
                 this.lng = lng;
                 LatLng ll = new LatLng(lat, lng);
-                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 19);
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 19);//use cameraupate to focus the screen to the current position
                 mGoogleMap.animateCamera(update);
-                setPlaceMarker(lat, lng);
+                setPlaceMarker(lat, lng);// we have place marker and collect mark.
                 //get the tag information here
-
                 RequestQueue queue = Volley.newRequestQueue(this);
+                //post request to get the tags nearby
                 String url = "http://roblkw.com/msa/neartags.php";
                 final Map<String, String> params = new HashMap<String, String>();
-
                 if(personEmail==null) {
                     Intent intent = getIntent();
                     personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
@@ -340,7 +334,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 StringRequest stringRequest = postTagNearByRequest(params, url);
                 queue.add(stringRequest);
             }
-
         }
     }
     private void setPlaceMarker(double lat, double lng) {
@@ -367,7 +360,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .snippet("Clicking me to collect a tag");
         return mGoogleMap.addMarker(optionsCollect);
     }
-
+//post request to get the tags nearby
     private StringRequest postTagNearByRequest(final Map<String,String> params, final String url) {
         return new StringRequest(Request.Method.POST, url,
 
@@ -420,7 +413,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             }
         };
     }
-
+//post request to get score
     private StringRequest postScoreStringRequest(final Map<String,String> params, final String url) {
         return new StringRequest(Request.Method.POST, url,
 
