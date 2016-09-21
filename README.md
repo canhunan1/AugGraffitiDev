@@ -36,27 +36,26 @@ This app is developed in Android Studio. The .xml files define the layouts of us
 
 The .xml files are stored in ```layout``` folder:
 
-```activity_main.xml``` - decribes the Login screen, in which the "Sign in with Google" is defined as below
+- ```activity_main.xml``` - decribes the Login screen, in which the "Sign in with Google" is defined as below
 ```
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
-
-    </com.google.android.gms.common.SignInButton>
+<com.google.android.gms.common.SignInButton
+    android:id="@+id/login"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom">
+</com.google.android.gms.common.SignInButton>
 
 ```
 
-```activity_google_map.xml``` - decribes the Map screen, in which the Googe Map is implemented in a ```fragment``` view
+- ```activity_google_map.xml``` - decribes the Map screen, in which the Googe Map is implemented in a ```fragment``` view
 ```
 <fragment
-       android:layout_width="match_parent"
-       android:layout_height="422dp"
-       android:name="com.google.android.gms.maps.MapFragment"
-       android:id="@+id/mapFragment"
-       android:layout_alignParentTop="true"
-       android:layout_weight="1.21" />
+   android:layout_width="match_parent"
+   android:layout_height="422dp"
+   android:name="com.google.android.gms.maps.MapFragment"
+   android:id="@+id/mapFragment"
+   android:layout_alignParentTop="true"
+   android:layout_weight="1.21" />
 ```
 
 
