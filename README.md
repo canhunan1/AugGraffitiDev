@@ -27,7 +27,7 @@ Step 2: Use your "Google Account" to login by clikcing "Sigin in with Google" bu
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692831/e67f0f54-7f51-11e6-817e-e51446127084.JPG)
 
-Step 3: Walking around ASU campus and find tags placed by other users.
+Step 3: Walking around ASU campus and find tags placed by other users. Tag only shows up on map if you are less than 50m away. One example shown int the picture below.
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692833/e7e49de6-7f51-11e6-9b28-32f08f4c4463.JPG)
 
