@@ -23,11 +23,11 @@ Step 1: To open the app, click the icon named "MyApplication". Once it is opened
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692829/e482ac4c-7f51-11e6-8ffd-627f12f5cba6.JPG)
 
-Step 2: Use your "Google Account" to login by clikcing "Sigin in with Google" button. If the login succeeds, you will be directed to Map screen. In this screen, a "P" tag located at screen center represnets your current location. This tag also allows you to place tags on current location (this function will be implemented in next step). By tapping the "SIGN OUT" button on top of the screen, you will be directed back to Login screen.   
+Step 2: Use your "Google Account" to login by clikcing "Sigin in with Google" button. If the login succeeds, you will be directed to Map screen. In this screen, a "P" tag located in the center represnets your current location. This "P" button also allows you to place a tag on current location (this function is currently unavailable and will be implemented in next step). By tapping the "SIGN OUT" button on top of the screen, you will be directed back to Login screen.   
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692831/e67f0f54-7f51-11e6-817e-e51446127084.JPG)
 
-Step 3: Walking around ASU campus and find tags placed by other users. Tag only shows up on map if you are less than 50m away. One example shown int the picture below.
+Step 3: Walking around ASU campus and find tags! Tags only show up on Map screen within 50m of your current location. An example shown in the picture below.
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692833/e7e49de6-7f51-11e6-9b28-32f08f4c4463.JPG)
 
