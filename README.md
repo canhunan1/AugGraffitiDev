@@ -124,15 +124,15 @@ In ```postStringRequest```  function, it post a ```<"email",personalEmail>``` ha
                             sendMessage(personEmail);
                     }
                     ...
-    ```
+```
     
-    ```
+```
         public void sendMessage(String message) {
         Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
         }
-    ```
+```
 
 - ```GoogleMapActivity.java``` - enables Google Map, and database interaction for "C" tag unveiling.
 
@@ -222,7 +222,7 @@ public void onLocationChanged(Location location) {//when the location is changed
             }
         }
     }
- ```
+```
 
 Once the request is posted, the response from database is collected through callback function ```onResponse```, frome where, the "C" tag data is recieved, analyized and shown on Map screen through ``` setCollectMarker```method. 
 
