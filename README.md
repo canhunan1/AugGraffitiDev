@@ -60,7 +60,7 @@ The .xml files are stored in ```app\src\main\res\layout``` folder:
 
 The .java files are stored in ```app\src\main\java\com\example\jianan\auggraffiti``` folder:
 
-- ```MainActivity.java``` - enables Google SignIn, database interactions and GoogleMapActivity initiation.
+- ```MainActivity.java``` - enables Google Sign-In, database interactions and GoogleMapActivity initiation.
 
 Once the app icon is tapped, the app is created by calling ```onCreate``` callback function. During the creation period, it create a  ```GoogleSignInOptions``` object ```signInOptions``` which configures sign-in to request users basic sign-in information, here we request user's email for sign-in by calling ```.requestEmail()``` methods. In the same time, a ``` GoogleApiClient``` object is instantiated as ```googleApiClient``` to access Google's Sign-In API, the options are specified in ```signInOptions``` argument. Once the Sign-In button is clicked, the ```onClick`` callback function is invoked and it starts the Google Sign-In activity.
 ```
@@ -80,7 +80,57 @@ protected void onCreate(Bundle savedInstanceState) {
     }
 ```
 
+The Google Sign-In results are rerived by ```onActivityResult``` callback function. The Sign-In results are stored in ```result``` which is a ```GoogleSignInResult``` object. If Sign-In succeeds (```result.isSuccess()```), the sign-in person's personal email is returned through ```getEmail()``` method.  In the next step, the personal email is post to database. In this process,  a request queue is first initiated by calling a ```Volley``` method ```newRequestQueue()``` with an argument ```FragmentActivity``` type. Then a ```StringRequest``` object ```stringRequest``` is added to the queue to talk to database. The ```StringRequest``` is instantiated by calling a ```postStringRequest``` function. 
 
+```
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
+            //to make sure continue to the next screen if the sign failed for unknown reason
+            if(result.isSuccess()) {
+                GoogleSignInAccount account = result.getSignInAccount();
+                personEmail = account.getEmail();
 
+                RequestQueue queue = Volley.newRequestQueue(this);
+                String url = "http://roblkw.com/msa/login.php";
+                final Map<String, String> params = new HashMap<String, String>();
+                params.put("email", personEmail);
+                
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = postStringRequest(params, url);
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
+            }
+            else{
+                Status status= result.getStatus();
+                Toast.makeText(this,status.toString(), Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+```
+
+In ```postStringRequest```  function, it post a ```<"email",personalEmail>``` hashmap onto the specified ```url``` and the response is retrived by a ```onResponse``` callback function. If the database login succeeds, it replies a ```String 0```. Once ```"0"``` is received, a ```sendMessage()``` method is invoked. This method starts an ```Intent``` to open the ```GoogleMapActivity.class``` activity and it also passess a ```String``` argument named ```personalEmail``` to that activity for furtuer use.
+
+```
+ private StringRequest postStringRequest(final Map<String,String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals("0")) // when get 0, log in successfully
+                            sendMessage(personEmail);
+                    }
+                    ...
+    ```
+    
+    ```
+        public void sendMessage(String message) {
+        Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+        }
+    ```
 
