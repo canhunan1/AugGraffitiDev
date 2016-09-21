@@ -222,7 +222,7 @@ public void onLocationChanged(Location location) {//when the location is changed
             }
         }
     }
-    ```
+ ```
 
 Once the request is posted, the response from database is collected through callback function ```onResponse```, frome where, the "C" tag data is recieved, analyized and shown on Map screen through ``` setCollectMarker```method. 
 
