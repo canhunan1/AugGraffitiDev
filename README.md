@@ -19,6 +19,8 @@ debug {
 ## User Interface
 A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, users can only interact with Login and Map screen. The other three screens will be developed and added to this app in next step.
 
-After successful installation, once you click the icon named "MyApplication" on your device, the Login screen pops up.
+To open the app, click the icon named "MyApplication". Once it is opened succeffully, the Login screen pops up.
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692829/e482ac4c-7f51-11e6-8ffd-627f12f5cba6.JPG)
 
+Use your "Google Account" to login by clikcing "Sigin in with Google" button. If the login succeeds, you are directed to Map screen.
+![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692831/e67f0f54-7f51-11e6-817e-e51446127084.JPG)
