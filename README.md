@@ -224,7 +224,7 @@ public void onLocationChanged(Location location) {//when the location is changed
     }
     ```
 
-Once the 
+Once the request is posted, the response from database is collected through callback function ```onResponse```, frome where, the "C" tag data is recieved, analyized and shown on Map screen through ``` setCollectMarker```method. 
 
 
 ```
@@ -233,7 +233,6 @@ private StringRequest postTagNearByRequest(final Map<String,String> params, fina
 
                 new Response.Listener<String>() {
                     @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
                     public void onResponse(String response) {
                         //The format of the response is "tagId,Latitude,Longitude"
                         String[] tagLoc = response.trim().split("[,]+");
@@ -250,39 +249,22 @@ private StringRequest postTagNearByRequest(final Map<String,String> params, fina
                             tagList.add(new Tag(Integer.valueOf(tagLoc[i * 3]), new LatLng(Double.valueOf(tagLoc[i * 3 + 2]), Double.valueOf(tagLoc[i * 3 + 1]))));
                             setCollectMarker(tagList.get(numTag - i- 1).ll);
                         }
-                        //how to check if the response is correct?
-                        //First the number is in ascending order.followed by 2 float number.
-                        //Here we assume the number of the location must be integer. And the location must be float.
-                        //If not something is wrong we need to throw that location away.
-                        //  Log.v(tag,"the length of the tagLoc is" + String.valueOf(tagLoc.length));
-
-                        if(response==null){
-                            Log.v(tag,"response is null");
-                        }
-                        else if(response.equals("0")) {
-                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
-                            startActivity(intent);
-                        }
-                        else{
-                            Log.v(tag,response);
-                        }
-                            //mTextView.setText("Fail to sign in");
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
+                        
+                        ...
+    
     }
-   ```
+```
 
-
+```
+private Marker setCollectMarker(LatLng ll){
+        MarkerOptions optionsCollect = new MarkerOptions()
+                .title("Collect")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.c))
+                .position(ll)
+                .snippet("Clicking me to collect a tag");
+        return mGoogleMapActivity.addMarker(optionsCollect);
+    }
+```
 
 
 
