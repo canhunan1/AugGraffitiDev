@@ -4,8 +4,8 @@ By Jianan Yang and Wenhao Chen
 ## Summary
 AugGraffiti is a mobile application on the Android for users to create their own Graffiti on there mobile device. 
 
-## Installation
-Download AugGraffitiDev\MyApplication\app\app-release.apk to your android device via USB or Internet. And then find this apk on your device and click it to finish installation.Make sure you allow permission to use your location.
+## Install
+Download AugGraffitiDev\MyApplication\app\app-release.apk to your phone and make sure you allow permission to use your location.
 ##Developement
 To develope, you need to confingure the build.gradle (app) firstly. You need to change directory ```storeFile file('D:/asu/asu/EEE598/AugGraffitiDev/keystore.jks')``` to your local directory
 ```
@@ -16,7 +16,6 @@ debug {
             storePassword '940205'
         }
 ```
-You may have other problem while building project on your own computer, please let me know via jianan205@gmail.com.
 ## Usage
 A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, users can only interact with Login and Map screen. The other three screens will be developed and added to this app in next step.
 
@@ -134,4 +133,163 @@ In ```postStringRequest```  function, it post a ```<"email",personalEmail>``` ha
         startActivity(intent);
         }
     ```
+
+- ```GoogleMapActivity.java``` - enables Google Map, and database interaction for "C" tag unveiling.
+
+During the activity creation, the Google Map is initiated by ```initMap()``` method. In this method, a ```MapFragment``` object is instantiated through ```findFragmentById()``` method with an argument ```R.id.mapFragment```. Then, the Google Map starts by calling ```getMapAsync()``` method. 
+
+```
+protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ...
+            initMap();
+        }
+        ...
+```
+
+```
+    private void initMap() {
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
+        mapFragment.getMapAsync(this);
+    }
+```
+
+Once the Google Map is started and ready for next operation, the ```onMapReady``` callback function is invoked, a ```GoogleMap``` argument is paased to this method. In ```onMapReay```, and new ```GoogleApiClient``` is ```build()``` and this Api is used to connect to the Google Map server by calling ```connect()``` method. 
+
+```
+ public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+        mGoogleApiClinet = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClinet.connect();
+        mGoogleMap.setOnMarkerClickListener(this);
+    }
+
+```
+
+Once the server is connected, a ```onConnected()``` callback function is invoked and the map location details can be specified in this funciton, such as in the ```setPriority()``` function, you can specifed the accuracy of Google Map, here we're using high accuracy ```PRIORITY_HIGH_ACCURACY``` and ```ACCESS_FINE_LOCATION```.
+
+```
+public void onConnected(Bundle bundle) {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(10000);
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+            ...
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.v(tag,"not get permission");
+                Toast.makeText(this,"Please allow permission to access your location in the setting", Toast.LENGTH_LONG).show();
+                return;
+            }
+            Log.v(tag,"get permission");
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClinet,mLocationRequest, this);
+    }
+```
+
+Once you moved and the location changed, the ```onLocationChanged(Location location)``` callback function is invoked. And the current location is passed in as ```Location``` type argument. The curent latitude and longitude are stored in ```lat``` and ```lng``` respectively with the method ```getLatitude()``` or ```getLongitude()```. The Map screen automatically follows your movement because of calling of methode ```animateCamera()``` which has an argument of ```CameraUpdate``` type. In the same time, the current location data is send to database in a ```HashMap``` format, where the keys and values are all ```String``` type. The ```HashMap``` object ```params``` contains 3 key, vaule pairs. The first key is```"email"``` which has a value retrived from the Intent sent from ```MainActivity```, the retriving function is ```intent.getStringExtra(MainActivity.EXTRA_MESSAGE)```. The second and third key is ```loc_long``` and ```loc_lat``` repectively, their values are retrived from ```location```.  The ```params``` ```HashMap``` is post to database server in a similar way discussed in previous paragrah. First, a ```RequestQueue``` is instantiated through method ```newRequestQueue``` in ```Volley```. The content that wshould be posted is in ```StringRequest``` object called ```stringRequest``` which is initiated through calling a function ```postTagNearByRequest``` which has two argumments, a ```HashMap``` and a ```url```. Then, this request is send to database server with ```add()``` method. 
+
+```
+public void onLocationChanged(Location location) {//when the location is changed
+       ...
+            Double lat = location.getLatitude();
+            Double lng = location.getLongitude();
+            
+            ...
+            
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 19);//use cameraupate to focus the screen to the current position
+                mGoogleMap.animateCamera(update);
+            
+            ...
+            
+                RequestQueue queue = Volley.newRequestQueue(this);
+                //post request to get the tags nearby
+                String url = "http://roblkw.com/msa/neartags.php";
+                final Map<String, String> params = new HashMap<String, String>();
+                if(personEmail==null) {
+                    Intent intent = getIntent();
+                    personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+                }
+                params.put("email", personEmail);
+                params.put("loc_long", lng.toString());
+                params.put("loc_lat", lat.toString());
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = postTagNearByRequest(params, url);
+                queue.add(stringRequest);
+            }
+        }
+    }
+    ```
+
+Once the 
+
+
+```
+private StringRequest postTagNearByRequest(final Map<String,String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    // no idea why enter in this function 3 times when just sending GPS information just once.
+                    public void onResponse(String response) {
+                        //The format of the response is "tagId,Latitude,Longitude"
+                        String[] tagLoc = response.trim().split("[,]+");
+                        //First we assume the format of the response never changed and the response we get is always correct
+                        //then we can get the numb int numTag = 0;
+                        int numTag = tagLoc.length%3==0?tagLoc.length/3:-1;
+                        if(tagList == null){
+                            tagList = new LinkedList<Tag>();
+                        }
+                        int i = numTag;
+                        while(--i >=0) {//we have tags near by
+                            //  double lat = Double.valueOf(tagLoc[numTag * 3 + 1]);
+                            // LatLng ll = new LatLng(Double.valueOf(tagLoc[numTag * 3 + 1]), Double.valueOf(tagLoc[numTag * 3 + 2]));
+                            tagList.add(new Tag(Integer.valueOf(tagLoc[i * 3]), new LatLng(Double.valueOf(tagLoc[i * 3 + 2]), Double.valueOf(tagLoc[i * 3 + 1]))));
+                            setCollectMarker(tagList.get(numTag - i- 1).ll);
+                        }
+                        //how to check if the response is correct?
+                        //First the number is in ascending order.followed by 2 float number.
+                        //Here we assume the number of the location must be integer. And the location must be float.
+                        //If not something is wrong we need to throw that location away.
+                        //  Log.v(tag,"the length of the tagLoc is" + String.valueOf(tagLoc.length));
+
+                        if(response==null){
+                            Log.v(tag,"response is null");
+                        }
+                        else if(response.equals("0")) {
+                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Log.v(tag,response);
+                        }
+                            //mTextView.setText("Fail to sign in");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
+    }
+   ```
+
+
+
+
+
+
+
+
+
+
+
 
