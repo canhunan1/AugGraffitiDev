@@ -4,8 +4,8 @@ By Jianan Yang and Wenhao Chen
 ## Summary
 AugGraffiti is a mobile application on the Android for users to create their own Graffiti on there mobile device. 
 
-## Install
-Download AugGraffitiDev\MyApplication\app\app-release.apk to your phone and make sure you allow permission to use your location.
+## Installation
+Download AugGraffitiDev\MyApplication\app\app-release.apk to your android device via USB or Internet. And then find this apk on your device and click it to finish installation.Make sure you allow permission to use your location.
 ##Developement
 To develope, you need to confingure the build.gradle (app) firstly. You need to change directory ```storeFile file('D:/asu/asu/EEE598/AugGraffitiDev/keystore.jks')``` to your local directory
 ```
@@ -16,6 +16,7 @@ debug {
             storePassword '940205'
         }
 ```
+You may have other problem while building project on your own computer, please let me know via jianan205@gmail.com.
 ## Usage
 A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, users can only interact with Login and Map screen. The other three screens will be developed and added to this app in next step.
 
