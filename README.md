@@ -31,5 +31,32 @@ Step 3: Walking around ASU campus and find tags! Tags within 50m of your current
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692833/e7e49de6-7f51-11e6-9b28-32f08f4c4463.JPG) Map screen with tags
 
-## Code
+## Details
+This app is developed in Android Studio. The .xml files define the layouts of user interface and the .java files are the core parts of this app which determines its functionality.
+
+The .xml files are stored in ```layout``` folder:
+
+```activity_main.xml``` - decribes the Login screen, in which the "Sign in with Google" is defined as below
+```
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
+    </com.google.android.gms.common.SignInButton>
+
+```
+
+```activity_google_map.xml``` - decribes the Map screen, in which the Googe Map is implemented in a ```fragment``` view
+```
+<fragment
+       android:layout_width="match_parent"
+       android:layout_height="422dp"
+       android:name="com.google.android.gms.maps.MapFragment"
+       android:id="@+id/mapFragment"
+       android:layout_alignParentTop="true"
+       android:layout_weight="1.21" />
+```
+
 
