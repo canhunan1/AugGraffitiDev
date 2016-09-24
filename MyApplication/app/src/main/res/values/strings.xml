@@ -5,5 +5,13 @@
     <string name="map_type_terrain">Terrian</string>
     <string name="map_type_satellite">Satellite</string>
     <string name="map_type_hybrid">Hybrid</string>
+    <string name="button_use_camera">Use Camera</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="button_capture_text">SNAP</string>
+    <string name="content_desc_overlay">overlay</string>
+    <string name="content_desc_image_just_taken">Image just taken</string>
+    <string name="title_activity_boussol_activty">Boussol_activty</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
