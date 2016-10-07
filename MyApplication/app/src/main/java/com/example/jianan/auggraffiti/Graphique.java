@@ -47,12 +47,22 @@ public class Graphique extends View{
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5f);
+        this.setDrawingCacheEnabled(true);
     }
     public String saveCanvasToBitmap(){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        getDrawingCache().compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream .toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        this.buildDrawingCache(true);
+        Bitmap bitmap = getDrawingCache();
+        if(bitmap == null){
+            Log.v("bitmap is null");
+            return null;
+        }
+        else{
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            Log.v(Base64.encodeToString(byteArray, Base64.DEFAULT));
+            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        }
     }
 
     @Override

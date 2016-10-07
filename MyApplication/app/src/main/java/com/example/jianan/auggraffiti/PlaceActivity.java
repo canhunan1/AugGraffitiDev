@@ -12,8 +12,17 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.io.File;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 //mport com.blundell.tut.cameraoverlay.FromXML;
 
@@ -62,7 +71,7 @@ public class PlaceActivity extends Activity implements PictureCallback {
             public void onClick(View v) {
                 btnSave.setTextColor(Color.RED);
                 Log.v("Click the button");
-                graph.saveCanvasToBitmap();
+                sendImageToServer(graph.saveCanvasToBitmap());
             }
         });
 //        txt = (TextView) findViewById(R.id.date);
@@ -146,6 +155,53 @@ public class PlaceActivity extends Activity implements PictureCallback {
             camera.release();
             camera = null;
         }
+    }
+
+    public boolean sendImageToServer(String imgString){
+        // personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        //send request to get score
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = "http://roblkw.com/msa/placetag.php";
+
+        final Map<String, String> params = new HashMap<String, String>();
+
+        params.put("email", "jianan205@gmail.com");
+        params.put("tag_img", imgString);
+        params.put("loc_long","0");
+        params.put("loc_lat","0");
+        params.put("orient_azimuth","0");
+        params.put("orient_altitude","0");
+        StringRequest stringRequest = postScoreStringRequest(params, url);
+        queue.add(stringRequest);
+        return true;
+    }
+
+    //post request to place
+    private StringRequest postScoreStringRequest(final Map<String,String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    // no idea why enter in this function 3 times when just sending GPS information just once.
+                    public void onResponse(String response) {
+//                        android.util.Log.v(tag,response);
+//                        if(score == null){
+//                            score = (TextView) findViewById(R.id.score);
+//                        }
+//                        score.setText(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
     }
 }
 
