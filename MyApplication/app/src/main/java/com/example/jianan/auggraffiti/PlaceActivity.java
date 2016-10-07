@@ -2,6 +2,7 @@ package com.example.jianan.auggraffiti;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
@@ -30,12 +31,13 @@ public class PlaceActivity extends Activity implements PictureCallback {
     private Camera camera;
     private CameraPreview cameraPreview;
     Button btn;
-    View graph;
+    private Graphique graph;
     TextView txt;
     Calendar cal;
     RatingBar rt;
     Boolean visible = false;
     EditText edi;
+    Button btnSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,17 @@ public class PlaceActivity extends Activity implements PictureCallback {
         }
 
         // btn = (Button) findViewById(R.id.button1);
-        graph = (View) findViewById(R.id.graph);
+        graph = (Graphique) findViewById(R.id.graph);
         graph.setVisibility(View.VISIBLE);
+        btnSave = (Button) findViewById(R.id.button_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSave.setTextColor(Color.RED);
+                Log.v("Click the button");
+                graph.saveCanvasToBitmap();
+            }
+        });
 //        txt = (TextView) findViewById(R.id.date);
 //
 //        rt = (RatingBar) findViewById(R.id.ratingBar1);
@@ -87,6 +98,8 @@ public class PlaceActivity extends Activity implements PictureCallback {
 //        });
 
     }
+
+
 
     // Show the camera view on the activity
     private void initCameraPreview() {

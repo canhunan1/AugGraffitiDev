@@ -1,13 +1,17 @@
 package com.example.jianan.auggraffiti;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by Jianan on 9/22/2016.
@@ -44,7 +48,14 @@ public class Graphique extends View{
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5f);
     }
+    public String saveCanvasToBitmap(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        getDrawingCache().compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream .toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
 
+    @Override
     protected void onDraw(final Canvas canvas) {
 
         this.canvas = canvas;
