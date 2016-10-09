@@ -168,9 +168,9 @@ public class PlaceActivity extends Activity implements PictureCallback {
 
         params.put("email", "jianan205@gmail.com");
         params.put("tag_img", imgString);
-        params.put("loc_long","0");
-        params.put("loc_lat","0");
-        params.put("orient_azimuth","0");
+        params.put("loc_long","-111.9305148");
+        params.put("loc_lat","33.4209686");
+        params.put("orient_azimuth","16.88");
         params.put("orient_altitude","0");
         StringRequest stringRequest = postScoreStringRequest(params, url);
         queue.add(stringRequest);
@@ -185,11 +185,12 @@ public class PlaceActivity extends Activity implements PictureCallback {
                     @Override
                     // no idea why enter in this function 3 times when just sending GPS information just once.
                     public void onResponse(String response) {
-//                        android.util.Log.v(tag,response);
-//                        if(score == null){
-//                            score = (TextView) findViewById(R.id.score);
-//                        }
-//                        score.setText(response);
+                        if(response.equals("0")) // when get 0, log in successfully
+                            //sendMessage(personEmail);
+                            //fail to log in.
+                        Log.v("Successfully post image");
+                        else
+                           Log.v("Error happens when posting the img");
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -58,10 +58,11 @@ public class Graphique extends View{
             return null;
         }
         else{
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 0, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream .toByteArray();
-            Log.v(Base64.encodeToString(byteArray, Base64.DEFAULT));
-            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+            String base64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            Log.v("the length of the compress string is" + String.valueOf(base64.length()));
+            return base64;
         }
     }
 

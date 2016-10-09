@@ -314,7 +314,10 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                                                                             // to limit the update of the marker
                 this.lat = lat;
                 this.lng = lng;
-                LatLng ll = new LatLng(lat, lng);
+                //LatLng ll = new LatLng(lat, lng);
+                lat = 33.4194278;
+                lng = -111.9395818;
+                LatLng ll = new LatLng(lat,lng);
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 19);//use cameraupate to focus the screen to the current position
                 mGoogleMap.animateCamera(update);
                 setPlaceMarker(lat, lng);// we have place marker and collect mark.
@@ -373,10 +376,12 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                         //First we assume the format of the response never changed and the response we get is always correct
                         //then we can get the numb int numTag = 0;
                         int numTag = tagLoc.length%3==0?tagLoc.length/3:-1;
+                        Log.v("Collect tag","the response is "+response);
                         if(tagList == null){
                             tagList = new LinkedList<Tag>();
                         }
                         int i = numTag;
+                        Log.v("Collect tag","the number of tag nearby is "+String.valueOf(i));
                         while(--i >=0) {//we have tags near by
                             //  double lat = Double.valueOf(tagLoc[numTag * 3 + 1]);
                             // LatLng ll = new LatLng(Double.valueOf(tagLoc[numTag * 3 + 1]), Double.valueOf(tagLoc[numTag * 3 + 2]));
@@ -443,7 +448,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         Intent intent = null;
         switch (activity){
             case "Collect":
-                 intent = new Intent(getApplicationContext(), PlaceActivity.class);
+                 intent = new Intent(getApplicationContext(), CollectActivity.class);
                 break;
             case "Place":
                 intent = new Intent(getApplicationContext(), PlaceActivity.class);
