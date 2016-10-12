@@ -51,6 +51,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     private LocationRequest mLocationRequest;
     private List<Tag> tagList = null;
     public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.MainActivity.MESSAGE";
+    public final static String TAGID_MESSAGE = "com.example.jianan.auggraffiti.GoogleMapActivity.TAGID";
     private  Marker placeMarker;
     private Double lat =0.0;
     private Double lng =0.0;
@@ -230,16 +231,17 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        switch( marker.getTitle()) {
+        String[] strings = marker.getTitle().trim().split(" ");
+        switch( strings[0]) {
             case "Collect":
                 Toast.makeText(this, "Collect has been clicked ",
                     Toast.LENGTH_SHORT).show();
-                sendMessage("Collect");
+                sendMessage("Collect", strings[1]);
                 break;
             case "Place":
                 Toast.makeText(this, "Place has been clicked ",
                         Toast.LENGTH_SHORT).show();
-                sendMessage("Place");
+                sendMessage("Place",null);
                 break;
         }
         return false;
@@ -314,9 +316,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                                                                             // to limit the update of the marker
                 this.lat = lat;
                 this.lng = lng;
-                //LatLng ll = new LatLng(lat, lng);
-                lat = 33.4194278;
-                lng = -111.9395818;
                 LatLng ll = new LatLng(lat,lng);
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 19);//use cameraupate to focus the screen to the current position
                 mGoogleMap.animateCamera(update);
@@ -351,12 +350,12 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .snippet("Clicking me to place a tag");
         placeMarker = mGoogleMap.addMarker(optionsPlace);
     }
-    private Marker setCollectMarker(LatLng ll/*,  Marker collectMarker*/) {
+    private Marker setCollectMarker(LatLng ll, int tagId) {
 //        if(collectMarker != null){
 //            collectMarker.remove();
 //        }
         MarkerOptions optionsCollect = new MarkerOptions()
-                .title("Collect")
+                .title("Collect "+String.valueOf(tagId))
                 //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.c))
                 .position(ll)
@@ -386,7 +385,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                             //  double lat = Double.valueOf(tagLoc[numTag * 3 + 1]);
                             // LatLng ll = new LatLng(Double.valueOf(tagLoc[numTag * 3 + 1]), Double.valueOf(tagLoc[numTag * 3 + 2]));
                             tagList.add(new Tag(Integer.valueOf(tagLoc[i * 3]), new LatLng(Double.valueOf(tagLoc[i * 3 + 2]), Double.valueOf(tagLoc[i * 3 + 1]))));
-                            setCollectMarker(tagList.get(numTag - i- 1).ll);
+                           setCollectMarker(tagList.get(numTag - i- 1).ll,tagList.get(numTag - i- 1).tagId);
                         }
                         //how to check if the response is correct?
                         //First the number is in ascending order.followed by 2 float number.
@@ -444,11 +443,13 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             }
         };
     }
-    public void sendMessage(String activity) {
+    public void sendMessage(String activity, String tagId) {
         Intent intent = null;
         switch (activity){
             case "Collect":
                  intent = new Intent(getApplicationContext(), CollectActivity.class);
+                intent.putExtra(TAGID_MESSAGE, tagId);
+                Log.v("TAGID_MESSAGE",tagId);
                 break;
             case "Place":
                 intent = new Intent(getApplicationContext(), PlaceActivity.class);
@@ -456,7 +457,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
         if(intent != null) {
             //EditText editText = (EditText) findViewById(R.id.edit_message);
-            intent.putExtra(EXTRA_MESSAGE, "");
+
             startActivity(intent);
         }
 

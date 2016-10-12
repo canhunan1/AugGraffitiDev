@@ -1,11 +1,19 @@
 package com.example.jianan.auggraffiti;
 
+import android.content.Intent;
+import android.graphics.Point;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,29 +26,62 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CollectActivity extends AppCompatActivity {
+public class CollectActivity extends AppCompatActivity implements SensorEventListener{
     private Camera camera;
     private CameraPreview cameraPreview;
-    private TextView hello;
-    private ImageView imageView;
+    //private TextView hello;
+    private ImageView imageView = null;
+    private Integer orientation_azimuth = 0 ;
+    private Integer orientation_altitude;
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private int screenWidth;
+    private int screenHeight;
+    private String tagId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_collect);
         //hello = (TextView) findViewById(R.id.textView);
-        imageView = (ImageView)findViewById(R.id.tag_image);
 
        setResult(RESULT_CANCELED);
         // Camera may be in use by another activity or the system or not
         // available at all
+        Intent intent = getIntent();
+        tagId = intent.getStringExtra(GoogleMapActivity.TAGID_MESSAGE);
+        Log.v("The collect ID is "+String.valueOf(tagId));
         camera = CameraHelper.getCameraInstance();
         if (CameraHelper.cameraAvailable(camera)) {
             initCameraPreview();
         } else {
             finish();
         }
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+
+
     private void initCameraPreview() {
         cameraPreview = (CameraPreview) findViewById(R.id.camera_preview);
         cameraPreview.init(camera);
@@ -55,7 +96,7 @@ public class CollectActivity extends AppCompatActivity {
 
         final Map<String, String> params = new HashMap<String, String>();
 
-        params.put("tag_id", "1");
+        params.put("tag_id", tagId);
         StringRequest stringRequest = postScoreStringRequest(params, url);
         queue.add(stringRequest);
         return true;
@@ -63,6 +104,7 @@ public class CollectActivity extends AppCompatActivity {
     private void loadImg(String url){
         Picasso.with(this).load(url).into(imageView);
     }
+
 
 
     private StringRequest postScoreStringRequest(final Map<String,String> params, final String url) {
@@ -75,6 +117,10 @@ public class CollectActivity extends AppCompatActivity {
                         if(response!=null){
                             String[] tagInfo = response.trim().split("[,]+");
                             loadImg(tagInfo[0]);
+                            orientation_azimuth = Integer.valueOf(tagInfo[1]);
+                            Log.v("oriazimuth is" + orientation_azimuth);
+                            orientation_altitude = Integer.valueOf(tagInfo[2]);
+/*
 //                            try {
 //                                URL url = new URL(tagInfo[0]);
 //                                Log.v("The image url is: "+url.toString());
@@ -92,7 +138,7 @@ public class CollectActivity extends AppCompatActivity {
 //                                e.printStackTrace();
 //                            }
 
-//
+//*/
 
                         }
                         else{
@@ -115,5 +161,34 @@ public class CollectActivity extends AppCompatActivity {
                 return params;
             }
         };
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(imageView == null){
+            imageView = (ImageView)findViewById(R.id.tag_image);
+        }
+        ViewGroup.MarginLayoutParams imageMargin = new ViewGroup.MarginLayoutParams(
+                imageView.getLayoutParams());
+        int size;
+
+        if(orientation_azimuth!=0)
+            size = (int)event.values[0]/orientation_azimuth;
+        else
+            size = 10;
+        Log.v("the ori is " + event.values[1]);
+        imageMargin.setMargins(size*20, 10, 0, 0);
+        RelativeLayout.LayoutParams imageLayout = new RelativeLayout.LayoutParams(imageMargin);
+        imageLayout.height = size*screenHeight;
+        imageLayout.width = size*screenWidth;
+        imageView.setLayoutParams(imageLayout);
+//        if(Math.abs(event.values[0] - orientation_azimuth)<1){
+//            imageView.set;
+//        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

@@ -27,7 +27,7 @@ android {
     buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId "com.example.jianan.auggraffiti"
-        minSdkVersion 11
+        minSdkVersion 13
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"

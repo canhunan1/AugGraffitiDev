@@ -60,7 +60,7 @@ public class Graphique extends View{
         else{
             bitmap.compress(Bitmap.CompressFormat.JPEG, 0, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream .toByteArray();
-            String base64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
             Log.v("the length of the compress string is" + String.valueOf(base64.length()));
             return base64;
         }
@@ -75,7 +75,7 @@ public class Graphique extends View{
 
         paint.setColor(Color.RED);
         canvas.drawCircle(50, 50, 40, paint);
-        paint.setColor(Color.BLACK);
+        paint.setColor(Color.RED);
 
         canvas.drawLine(startX,startY, endX,endY, paint);
 
