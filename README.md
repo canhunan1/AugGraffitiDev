@@ -270,7 +270,7 @@ private Marker setCollectMarker(LatLng ll){
 ```
 
 
-- ```CameraPreview.java``` - defines how camera is opened. 
+- ```CameraPreview.java``` - defines how camera is opened and shown on activity screen.
 
 
 This ```CameraPreview``` class extends ```SurfaceView``` class and implements ```SurfaceHolder``` interface.
@@ -306,6 +306,63 @@ private void initCamera(SurfaceHolder holder) {
         }
     }
 ```
+
+
+- ```Graphique.java``` - this class defines how to draw graffiti on the activity screen and how to save it as base64 .JPEG format. 
+
+
+This ```Graphique``` class extends ```View``` class.
+In this class, there are three attributes, i.e. ```Path```, ```Paint``` and ```Canvas```, the first one defines the coordinates of every drawing pixel, the second one defines the propertie of the draiwing pixel, and the third one defines the drawing medium (background).
+
+The method ```init``` initiates the property of drawing pixels, it set the color to be ```RED``` with ```setColor``` function, and it smoothes the drawing lines with ```setAntiAlias``` function, it set the line style to be ```STROKE``` in ```setStyle``` funtion, sets the line width to be ```5f``` in ```setStrokeWidth``` function, etc. 
+
+```
+ private void init(){
+        paint.setColor(Color.RED);
+        paint.setAntiAlias(true);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5f);
+        this.setDrawingCacheEnabled(true);
+    }
+```
+
+The ```onTouchEvent``` callback funtion is invoked once touching screen event happens, it acquires the touching coordinates (X,Y) through the methode ```getX()```or ```getY()```in ```motionEvent``` instance. While ```ACTION_DOWN``` or ```ACTION_MOVE``` it retrives the coordinates and send it to ```path``` instance.
+
+```
+@Override
+    public boolean onTouchEvent(MotionEvent motionEvent){
+        float motionX = motionEvent.getX();
+        float motionY = motionEvent.getY();
+
+        switch(motionEvent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                path.moveTo(motionX,motionY);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                path.lineTo(motionX,motionY);
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+        invalidate();
+
+        return true;
+    }
+```
+The ```onDraw``` callback function invokes 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
