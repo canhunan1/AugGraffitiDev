@@ -350,7 +350,39 @@ The ```onTouchEvent``` callback funtion is invoked once touching screen event ha
         return true;
     }
 ```
-The ```onDraw``` callback function invokes 
+The ```onDraw``` callback function invokes when the view is intatiated and when the ```invalidate()``` function is called in ```onTouchEvent()``` callback function. It takes a ```Canvas``` as input parameter, which allows the view to draw itself. The filled color is set to be ```TRANSPARENT``` via ```drawColor()``` method. The ```drawPath``` defines the shape of draw, it takes ```Path``` and ```paint``` as its two input argument which defines the shape and color of the drawing. 
+
+```
+ @Override
+    protected void onDraw(final Canvas canvas) {
+
+        this.canvas = canvas;
+        canvas.drawColor(Color.TRANSPARENT);
+        canvas.drawPath(path, paint);
+    }
+ ```
+
+The ```saveCanvasToBitmap()``` function is used to convert what you have drawn into image which will be saved in database. If the ```getDrawingCache()``` method is used to extract the drawing from cache, and save the result in ```Bitmap``` instance ```bitmap```. if the ```bitmap``` is not empty, it compress the image to .JEPG format. This .JEPG image is then transformed into byteArray using ```toByteArray()``` method. The ```byteArray``` is then base64 encoded using ```Base64.encodeToString()``` method with one argument to be ```byteArray``` and another argument to be ```Base64.NO_WRAP```.
+
+```
+    public String saveCanvasToBitmap(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        this.buildDrawingCache(true);
+        Bitmap bitmap = getDrawingCache();
+        if(bitmap == null){
+            Log.v("bitmap is null");
+            return null;
+        }
+        else{
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 0, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            Log.v("the length of the compress string is" + String.valueOf(base64.length()));
+            return base64;
+        }
+    }
+```
+
 
 
 
