@@ -299,6 +299,6 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
             return base64;
         }
     }
-    
+
 
 }
