@@ -317,6 +317,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 this.lat = lat;
                 this.lng = lng;
                 LatLng ll = new LatLng(lat,lng);
+                Log.v("current location","lat is "+lat+", lng is "+lng);
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 19);//use cameraupate to focus the screen to the current position
                 mGoogleMap.animateCamera(update);
                 setPlaceMarker(lat, lng);// we have place marker and collect mark.
@@ -329,6 +330,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                     Intent intent = getIntent();
                     personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
                 }
+                Log.v("here the email is ", personEmail);
                 params.put("email", personEmail);
                 params.put("loc_long", lng.toString());
                 params.put("loc_lat", lat.toString());

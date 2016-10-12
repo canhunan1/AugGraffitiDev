@@ -35,9 +35,16 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
     private Integer orientation_altitude;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+    private Sensor mMagnetometer;
     private int screenWidth;
     private int screenHeight;
     private String tagId;
+    private float[] gData = new float[3]; // accelerometer
+    private float[] mData = new float[3]; // magnetometer
+    private float[] rMat = new float[9];
+    private float[] iMat = new float[9];
+    private float[] orientation = new float[3];
+    private int mAzimuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,8 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         }
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -72,6 +81,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -165,23 +175,42 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                gData = event.values.clone();
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                mData = event.values.clone();
+                break;
+            default:
+                return;
+        }
+
+        if (SensorManager.getRotationMatrix(rMat, iMat, gData, mData)) {
+            mAzimuth = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
+        }
         if(imageView == null){
             imageView = (ImageView)findViewById(R.id.tag_image);
         }
         ViewGroup.MarginLayoutParams imageMargin = new ViewGroup.MarginLayoutParams(
                 imageView.getLayoutParams());
         int size;
+        Log.v("the orientation is "+Math.abs(orientation_azimuth-mAzimuth));
 
-        if(orientation_azimuth!=0)
-            size = (int)event.values[0]/orientation_azimuth;
+        float diff = (float)Math.abs(orientation_azimuth-mAzimuth);
+        float factor;
+        if(diff>40)
+            factor = -(float)Math.exp(-diff/1000.0)+1;
         else
-            size = 10;
+            factor = (float)0.5;
+        Log.v("factor  "+factor);
         Log.v("the ori is " + event.values[1]);
-        imageMargin.setMargins(size*20, 10, 0, 0);
+        //imageMargin.setMargins( 20, 10, 0, 0);
         RelativeLayout.LayoutParams imageLayout = new RelativeLayout.LayoutParams(imageMargin);
-        imageLayout.height = size*screenHeight;
-        imageLayout.width = size*screenWidth;
+        imageLayout.height = (int)(screenHeight*factor);
+        imageLayout.width =  (int)(screenWidth*factor);
         imageView.setLayoutParams(imageLayout);
+
 //        if(Math.abs(event.values[0] - orientation_azimuth)<1){
 //            imageView.set;
 //        }
