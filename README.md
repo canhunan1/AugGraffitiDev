@@ -60,7 +60,9 @@ The .xml files are stored in ```app\src\main\res\layout``` folder:
 
 The .java files are stored in ```app\src\main\java\com\example\jianan\auggraffiti``` folder:
 
+
 - ```MainActivity.java``` - enables Google Sign-In, database interactions and GoogleMapActivity initiation.
+
 
 Once the app icon is tapped, the app is created by calling ```onCreate``` callback function. During the creation period, it create a  ```GoogleSignInOptions``` object ```signInOptions``` which configures sign-in to request users basic sign-in information, here we request user's email for sign-in by calling ```.requestEmail()``` methods. In the same time, a ``` GoogleApiClient``` object is instantiated as ```googleApiClient``` to access Google's Sign-In API, the options are specified in ```signInOptions``` argument. Once the Sign-In button is clicked, the ```onClick`` callback function is invoked and it starts the Google Sign-In activity.
 ```
@@ -134,7 +136,9 @@ In ```postStringRequest```  function, it post a ```<"email",personalEmail>``` ha
         }
 ```
 
+
 - ```GoogleMapActivity.java``` - enables Google Map, and database interaction for "C" tag unveiling.
+
 
 During the activity creation, the Google Map is initiated by ```initMap()``` method. In this method, a ```MapFragment``` object is instantiated through ```findFragmentById()``` method with an argument ```R.id.mapFragment```. Then, the Google Map starts by calling ```getMapAsync()``` method. 
 
@@ -226,7 +230,6 @@ public void onLocationChanged(Location location) {//when the location is changed
 
 Once the request is posted, the response from database is collected through callback function ```onResponse```, frome where, the "C" tag data is recieved, analyized and shown on Map screen through ``` setCollectMarker```method. 
 
-
 ```
 private StringRequest postTagNearByRequest(final Map<String,String> params, final String url) {
         return new StringRequest(Request.Method.POST, url,
@@ -266,10 +269,43 @@ private Marker setCollectMarker(LatLng ll){
     }
 ```
 
+
 - ```CameraPreview.java``` - defines how camera is opened. 
 
-This ```CameraPreview``` class extends ```SurfaceView``` class and implements ```SurfaceHolder``` interface.
 
+This ```CameraPreview``` class extends ```SurfaceView``` class and implements ```SurfaceHolder``` interface.
+This class has two attributes, i.e. ```private Camera camer``` and ```private SurfaceHolder holder```, and four implemented functions:
+the ```public void init``` function inits the Camera by calling the ```initSurfaceHolder()``` function.
+```
+public void init(Camera camera) {
+        this.camera = camera;
+        initSurfaceHolder();
+    }
+```
+```
+private void initSurfaceHolder() {
+        holder = getHolder();
+        holder.addCallback(this);
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    }
+```
+Once the ```initSurfaceHolder()``` function is excuted, the ```surfaceCreated``` callback function will be invoked. And in this function, it will run ```initCamera``` function.
+```
+public void surfaceCreated(SurfaceHolder holder) {
+        initCamera(holder);
+    }
+```
+In ``` initCamera``` function, the camera view will be opened by ```camera.startPreview()``` function, only after the ```camera.setPreviewDisplay(holder)``` is ready. Any errors will be shown in Log according to the ```catch (Exception e)``` method.
+```
+private void initCamera(SurfaceHolder holder) {
+        try {
+            camera.setPreviewDisplay(holder);
+            camera.startPreview();
+        } catch (Exception e) {
+            //Log.d("Error setting camera preview", e);
+        }
+    }
+```
 
 
 
