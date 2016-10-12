@@ -1,6 +1,8 @@
 package com.example.jianan.auggraffiti;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Sensor;
@@ -9,9 +11,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -23,6 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +51,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
     private float[] iMat = new float[9];
     private float[] orientation = new float[3];
     private int mAzimuth;
+    private Button buttonCollect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,15 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_collect);
         //hello = (TextView) findViewById(R.id.textView);
 
+        buttonCollect = (Button) findViewById(R.id.button_collect);
+        buttonCollect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonCollect.setTextColor(Color.RED);
+                Log.v("Click the button");
+                sendScreenToServer(saveScreenToBitmap());
+            }
+        });
        setResult(RESULT_CANCELED);
         // Camera may be in use by another activity or the system or not
         // available at all
@@ -220,4 +236,69 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+    public boolean sendScreenToServer(String imgString) {
+        // personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        //send request to get score
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = "http://roblkw.com/msa/collecttag.php";
+
+        final Map<String, String> params = new HashMap<String, String>();
+
+        params.put("email", "jianan205@gmail.com");
+        params.put("tag_id", tagId);
+        params.put("collect_img", imgString);
+
+        StringRequest stringRequest = postScreenStringRequest(params, url);
+        queue.add(stringRequest);
+        return true;
+    }
+    private StringRequest postScreenStringRequest(final Map<String, String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    // no idea why enter in this function 3 times when just sending GPS information just once.
+                    public void onResponse(String response) {
+                        Log.v("collect response " + response);
+                        if (response.equals("0")) // when get 0, log in successfully
+                            //sendMessage(personEmail);
+                            //fail to log in.
+                            Log.v("Successfully collect image");
+                        else
+                            Log.v("Error happens when posting the img");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
+    }
+    private String saveScreenToBitmap(){
+        View v1 = getWindow().getDecorView().getRootView();
+        v1.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+        v1.setDrawingCacheEnabled(false);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        if(bitmap == null){
+            Log.v("bitmap is null");
+            return null;
+        }
+        else{
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            Log.v("the length of the compress string is" + String.valueOf(base64.length()));
+            return base64;
+        }
+    }
+    
+
 }
