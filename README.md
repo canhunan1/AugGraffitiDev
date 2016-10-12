@@ -266,7 +266,8 @@ private Marker setCollectMarker(LatLng ll){
     }
 ```
 
-
+- ```CameraPreview.java``` - defines how camera is opened. 
+This ```CameraPreview``` class extends ```SurfaceView``` and implements ```SurfaceHolder``` interface
 
 
 
