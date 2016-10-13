@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <!--
       <uses-sdk
         android:minSdkVersion="15"
@@ -59,7 +60,8 @@
         <activity android:name=".GoogleMapActivity" />
         <activity android:name=".CollectActivity" />
         <activity android:name=".PlaceActivity" />
-        <activity android:name=".GalleryActivity"></activity>
+        <activity android:name=".GalleryActivity" />
+        <activity android:name=".ImageActivity"></activity>
     </application>
 
 </manifest>
