@@ -56,6 +56,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     private LocationRequest mLocationRequest;
     private List<Tag> tagList = null;
     public final static String TAGID_MESSAGE = "com.example.jianan.auggraffiti.GoogleMapActivity.TAGID";
+    public final static String PERSONAL_EMAIL = "com.example.jianan.auggraffiti.GoogleMapActivity.EMAIL";
     private Marker placeMarker;
     private Double lat =0.0;
     private Double lng =0.0;
@@ -370,10 +371,12 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             case "Collect":
                  intent = new Intent(getApplicationContext(), CollectActivity.class);
                 intent.putExtra(TAGID_MESSAGE, tagId);
+                intent.putExtra(PERSONAL_EMAIL, personEmail);
                 Log.v("TAGID_MESSAGE",tagId);
                 break;
             case "Place":
                 intent = new Intent(getApplicationContext(), PlaceActivity.class);
+                intent.putExtra(PERSONAL_EMAIL, personEmail);
                 break;
         }
         if(intent != null) {

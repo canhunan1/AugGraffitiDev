@@ -1,6 +1,6 @@
 package com.example.jianan.auggraffiti;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -14,9 +14,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,7 +36,7 @@ import java.util.Map;
  * Compress the drawing tag into Base64 and send it to the server.
  * @author Jianan
  */
-public class PlaceActivity extends Activity implements PictureCallback,LocationListener, SensorEventListener {
+public class PlaceActivity extends AppCompatActivity implements PictureCallback,LocationListener, SensorEventListener {
     private Camera camera;
     private CameraPreview cameraPreview;
     private GraphView graph;
@@ -52,6 +54,7 @@ public class PlaceActivity extends Activity implements PictureCallback,LocationL
     private float[] iMat = new float[9];
     private float[] orientation = new float[3];
     private int azimuth;
+    String personEmail = null;
     /**
     * Constructor
     *Setup the activity; Check if the camera is available.
@@ -77,8 +80,11 @@ public class PlaceActivity extends Activity implements PictureCallback,LocationL
             public void onClick(View v) {
                 btnSave.setTextColor(Color.RED);
                 sendImageToServer(graph.saveCanvasToBitmap());
+
             }
         });
+        Intent intent = getIntent();
+        personEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
     }
     /*
     * Register the accelerometer and magnetometer in the onResume as the documentation in android developer
@@ -132,7 +138,7 @@ public class PlaceActivity extends Activity implements PictureCallback,LocationL
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://roblkw.com/msa/placetag.php";
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("email", "jianan205@gmail.com");
+        params.put("email", personEmail);
         params.put("tag_img", imgString);
         params.put("loc_long", String.valueOf(lng));
         params.put("loc_lat", String.valueOf(lat));
@@ -140,6 +146,7 @@ public class PlaceActivity extends Activity implements PictureCallback,LocationL
         params.put("orient_altitude", String.valueOf(altitude));
         StringRequest stringRequest = postPlaceStringRequest(params, url);
         queue.add(stringRequest);
+        Toast.makeText(this,"The tag is sent to the server", Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -150,6 +157,9 @@ public class PlaceActivity extends Activity implements PictureCallback,LocationL
                     @Override
                     // no idea why enter in this function 3 times when just sending GPS information just once.
                     public void onResponse(String response) {
+                      if(response.equals('0')) {
+
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override

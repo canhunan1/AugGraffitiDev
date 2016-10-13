@@ -19,6 +19,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -54,6 +55,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
     private float[] orientation = new float[3];
     private int azimuth;
     private Button buttonCollect;
+    private String personEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         });
         Intent intent = getIntent();
         tagId = intent.getStringExtra(GoogleMapActivity.TAGID_MESSAGE);
+        personEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
+
         camera = CameraHelper.getCameraInstance();
         if (CameraHelper.cameraAvailable(camera)) {
             initCameraPreview();
@@ -201,18 +205,30 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
     * Send the screen shot to the server
     * */
     public boolean sendScreenToServer(String imgString) {
-        RequestQueue queue = Volley.newRequestQueue(this);
+        //RequestQueue queue = Volley.newRequestQueue(this);
 
         String url = "http://roblkw.com/msa/collecttag.php";
 
         final Map<String, String> params = new HashMap<String, String>();
 
-        params.put("email", "jianan205@gmail.com");
+        params.put("email", personEmail);
         params.put("tag_id", tagId);
         params.put("collect_img", imgString);
+        new StringPost(this, url,
+                new Response.Listener<String>(){
 
-        StringRequest stringRequest = postScreenStringRequest(params, url);
-        queue.add(stringRequest);
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals('0')) {
+                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                }, "Send Screen to server error",
+        params);
+       // StringRequest stringRequest = postScreenStringRequest(params, url);
+       // queue.add(stringRequest);
+        Toast.makeText(this,"The tag is collected", Toast.LENGTH_SHORT).show();
         return true;
     }
 
