@@ -332,17 +332,32 @@ private StringRequest postScoreStringRequest(final Map<String,String> params, fi
     }
 ```
 
-
+This is ```setCollectMarker()``` method, which shows the marker on the googleMap, it has two input arguments, location and marker id. And the marker image is load from ```drawable``` foler, it uses ```mGoogleMapActiviity.addMarker()``` to load the marker onto map.
 
 
 ```
-private Marker setCollectMarker(LatLng ll){
+private Marker setCollectMarker(LatLng ll, int tagID){
         MarkerOptions optionsCollect = new MarkerOptions()
                 .title("Collect")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.c))
                 .position(ll)
                 .snippet("Clicking me to collect a tag");
         return mGoogleMapActivity.addMarker(optionsCollect);
+    }
+```
+Similar to ```setCollectMarker```, below is ```setPlaceMarker``` method, it loads and shows the placeMarker onto googleMap with a similar way. 
+```
+private void setPlaceMarker(double lat, double lng) {
+        if(placeMarker != null){
+            placeMarker.remove();
+        }
+        MarkerOptions optionsPlace = new MarkerOptions()
+                .title("Place")
+                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pm))
+                .position(new LatLng(lat,lng))
+                .snippet("Clicking me to place a tag");
+        placeMarker = mGoogleMap.addMarker(optionsPlace);
     }
 ```
 
