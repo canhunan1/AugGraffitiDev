@@ -10,8 +10,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -30,7 +30,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -106,42 +105,9 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
             @Override
             public void onClick(View v) {
                 btnSave.setTextColor(Color.RED);
-                Log.v("Click the button");
                 sendImageToServer(graph.saveCanvasToBitmap());
             }
         });
-//        txt = (TextView) findViewById(R.id.date);
-//
-//        rt = (RatingBar) findViewById(R.id.ratingBar1);
-//        edi = (EditText) findViewById(R.id.editText1);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                if (!visible) {
-//
-//                    graph.setVisibility(View.VISIBLE);
-//                    rt.setVisibility(View.VISIBLE);
-//                    edi.setVisibility(View.VISIBLE);
-//                    txt.setVisibility(View.VISIBLE);
-//                    txt.setText("Camera View :001 /10/04/2014 thread ");
-//
-//                    txt.setText("Camera View :001 /10/04/2014");
-//                    btn.setText("Masquer Graphique");
-//
-//                } else {
-//
-//                    graph.setVisibility(View.INVISIBLE);
-//                    txt.setVisibility(View.INVISIBLE);
-//                    rt.setVisibility(View.INVISIBLE);
-//                    edi.setVisibility(View.INVISIBLE);
-//                    btn.setText("Afficher Graphique");
-//                }
-//                visible = !visible;
-//            }
-//        });
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -172,32 +138,10 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
         cameraPreview.init(camera);
     }
 
-    public void onCaptureClick(View button) {
-        // Take a picture with a callback when the photo has been created
-        // Here you can add callbacks if you want to give feedback when the
-        // picture is being taken
-        camera.takePicture(null, null, this);
-    }
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
-//        Log.d("Picture taken");
-//        String path = savePictureToFileSystem(data);
-//        setResult(path);
-//        finish();
     }
-
-//    private static String savePictureToFileSystem(byte[] data) {
-//        File file = MediaHelper.getOutputMediaFile();
-//        MediaHelper.saveToFile(data, file);
-//        return file.getAbsolutePath();
-//    }
-
-//    private void setResult(String path) {
-//        Intent intent = new Intent();
-//        intent.putExtra(EXTRA_IMAGE_PATH, path);
-//        setResult(RESULT_OK, intent);
-//    }
 
     // ALWAYS remember to release the camera when you are finished
     @Override
@@ -215,14 +159,9 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
     }
 
     public boolean sendImageToServer(String imgString) {
-        // personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        //send request to get score
         RequestQueue queue = Volley.newRequestQueue(this);
-
         String url = "http://roblkw.com/msa/placetag.php";
-
         final Map<String, String> params = new HashMap<String, String>();
-
         params.put("email", "jianan205@gmail.com");
         params.put("tag_img", imgString);
         params.put("loc_long", String.valueOf(lng));
@@ -237,17 +176,16 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
     //post request to place
     private StringRequest postScoreStringRequest(final Map<String, String> params, final String url) {
         return new StringRequest(Request.Method.POST, url,
-
                 new Response.Listener<String>() {
                     @Override
                     // no idea why enter in this function 3 times when just sending GPS information just once.
                     public void onResponse(String response) {
-                        if (response.equals("0")) // when get 0, log in successfully
+                        /*if (response.equals("0")) // when get 0, log in successfully
                             //sendMessage(personEmail);
                             //fail to log in.
                             Log.v("Successfully post image");
                         else
-                            Log.v("Error happens when posting the img");
+                            Log.v("Error happens when posting the img");*/
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -265,7 +203,6 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
     @Override
     public void onStart() {
         super.onStart();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -285,7 +222,6 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
     @Override
     public void onStop() {
         super.onStop();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
