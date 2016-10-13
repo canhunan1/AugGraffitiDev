@@ -20,11 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.HashMap;
@@ -156,32 +153,7 @@ public class PlaceActivity extends AppCompatActivity implements PictureCallback,
         Toast.makeText(this,"The tag is sent to the server", Toast.LENGTH_SHORT).show();
         return true;
     }
-
-    //post request to place
-    private StringRequest postPlaceStringRequest(final Map<String, String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
-                    public void onResponse(String response) {
-                      if(response.equals('0')) {
-
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
-    }
-
-
-
+    
     /*
     * Called when any sensor is changed.
     * Get the data from accelerometer and the magnetometer
