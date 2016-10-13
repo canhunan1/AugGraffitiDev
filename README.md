@@ -476,15 +476,126 @@ The ```saveCanvasToBitmap()``` function is used to convert what you have drawn i
 ```
 
 
+- ```PlaceActivity.java``` - this activity implements graph drawing, location and orientation retriving from sensor and how to commit the tag into server.
 
+This class extends ```Activity``` class and implements ```PictureCallback```, ```LocationListener```, ```SensorEventListener``` interfaces.
 
+In the ```onCreate()``` callback functions. It instatiates ```LocationManager``` which manages the GPS location of device, and ```SensorManager``` which manages different types of sensors such as ```TYPE_ACCELEROMETER``` and ```TYPE_MAGNETIC_FIELD```. The ```CameraHelper.getCameraInstance()``` obtains a ```Camera``` instance, if the camera is avalable, it will be initiated by ```initCameraPreview()``` method, or it will be finished. The ```Graphique``` is instantiated as ```graph```. Then this ```graph``` is send to sever by ```sendImageToServer()``` method when clicking ```R.id.button_save``` button.
 
+```
+protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        ...
+        
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
+        camera = CameraHelper.getCameraInstance();
+        if (CameraHelper.cameraAvailable(camera)) {
+            initCameraPreview();
+        } else {
+            finish();
+        }
 
+        graph = (Graphique) findViewById(R.id.graph);
+        graph.setVisibility(View.VISIBLE);
+        btnSave = (Button) findViewById(R.id.button_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSave.setTextColor(Color.RED);
+                Log.v("Click the button");
+                sendImageToServer(graph.saveCanvasToBitmap());
+            }
+        });
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+```
 
+In the ```initCameraPreview()``` method, the camera is opened. First, the ```CameraPreview``` is instatiated and then the ```camera``` is opened by calling ```init(camera)``` method of ```cameraPreview``` class.
 
+```
+private void initCameraPreview() {
+        cameraPreview = (CameraPreview) findViewById(R.id.camera_preview);
+        cameraPreview.init(camera);
+    }
+```
+This ```sendImageToServer()``` method takes String argument (which is the Base64 image) and post it on sever. The posting method is same as talked above. The ```Map<String, String>``` data send to the sever are, listed are keys, email (```email```), coverted images (```tag_img```), location (```loc_long```,```loc_lat```), orientation (```orient_azimuth``` and ```orient_altitude```). The ```postScoreStringRequest(final Map<String, String> params, final String url)``` takes two arguments, the formulated ```Map<String, String>``` and ```url```, it's same as the ```postScoreStringRequest()``` method in ```GoogleMapActivity.java``` activity.
 
+```
+public boolean sendImageToServer(String imgString) {
+        //send request to get score
+        RequestQueue queue = Volley.newRequestQueue(this);
 
+        String url = "http://roblkw.com/msa/placetag.php";
+
+        final Map<String, String> params = new HashMap<String, String>();
+
+        params.put("email", "jianan205@gmail.com");
+        params.put("tag_img", imgString);
+        params.put("loc_long", String.valueOf(lng));
+        params.put("loc_lat", String.valueOf(lat));
+        params.put("orient_azimuth", String.valueOf(mAzimuth));
+        params.put("orient_altitude", String.valueOf(altitude));
+        StringRequest stringRequest = postScoreStringRequest(params, url);
+        queue.add(stringRequest);
+        return true;
+    }
+```
+
+In the ```onPause()``` callback, it releases the camera by calling ```releaseCamera()``` function and unregisters the SensorManager by calling ```unregisterListener()``` methode. In the ```releaseCamer()``` method, the Camera is released by calling ```release()``` method.
+
+```
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseCamera();
+        mSensorManager.unregisterListener(this);
+    }
+
+    private void releaseCamera() {
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+    }
+```
+
+In the ```onResume()``` callback, it register the ```SensorManager``` by calling ```registerListener()``` function and update the location by calling ```requestLocationUpdates()``` function.
+```
+   @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        ...    
+        locationManager.requestLocationUpdates("gps", (long) 5000, (float) 0.0, this);
+    }
+```
+The senor data is retrived in the ```onSensorChanged()``` callback. the ```ACCELEROMETER``` data is saved in ```gData```, the ```TYPE_MAGNETIC_FILED``` data is saved in ```mData```, the rotation and inclination data is calculated through ```getRotationMatrix()``` method, and the ```mAzimuth``` value is calcualted in the last line of this code section. 
+```
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float[] data;
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                gData = event.values.clone();
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                mData = event.values.clone();
+                break;
+            default:
+                return;
+        }
+
+        if (SensorManager.getRotationMatrix(rMat, iMat, gData, mData)) {
+            mAzimuth = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
+        }
+    }
+```
 
 
 
