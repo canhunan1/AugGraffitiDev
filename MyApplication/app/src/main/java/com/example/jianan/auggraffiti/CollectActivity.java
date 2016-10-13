@@ -84,12 +84,18 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
+        initScreenSize();
+
+    }
+    /*
+       * To get the size of the screen
+       * */
+    private void initScreenSize(){
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         screenWidth = size.x;
         screenHeight = size.y;
-
     }
 
     @Override
@@ -203,10 +209,9 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
 
     /*
     * Send the screen shot to the server
+    * @prama String imgString  the string after base64 compressed
     * */
-    public boolean sendScreenToServer(String imgString) {
-        //RequestQueue queue = Volley.newRequestQueue(this);
-
+    public void sendScreenToServer(String imgString) {
         String url = "http://roblkw.com/msa/collecttag.php";
 
         final Map<String, String> params = new HashMap<String, String>();
@@ -226,32 +231,11 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
                     }
                 }, "Send Screen to server error",
         params);
-       // StringRequest stringRequest = postScreenStringRequest(params, url);
-       // queue.add(stringRequest);
         Toast.makeText(this,"The tag is collected", Toast.LENGTH_SHORT).show();
-        return true;
     }
-
-    private StringRequest postScreenStringRequest(final Map<String, String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
-
-                new Response.Listener<String>() {
-                    @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
-                    public void onResponse(String response) {
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
-    }
-
+    /*
+    * Convert the screen shot in the cache to the bitmap
+    * */
     private String saveScreenToBitmap(){
         View v1 = getWindow().getDecorView().getRootView();
         v1.setDrawingCacheEnabled(true);
