@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -33,7 +34,7 @@ import java.util.Map;
  * Compress the drawing tag into Base64 and send it to the server.
  * @author Jianan
  */
-public class PlaceActivity extends Activity implements PictureCallback, LocationListener, SensorEventListener {
+public class PlaceActivity extends Activity implements PictureCallback,LocationListener, SensorEventListener {
     private Camera camera;
     private CameraPreview cameraPreview;
     private GraphView graph;
@@ -163,31 +164,7 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
     }
 
 
-    /*
-    * Called when the location is changed.
-    * Get the location from the android location sensor.
-    * */
-    @Override
-    public void onLocationChanged(Location location) {
-        lng = location.getLongitude();
-        lat = location.getLatitude();
-        altitude = location.getAltitude();
-    }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
     /*
     * Called when any sensor is changed.
     * Get the data from accelerometer and the magnetometer
@@ -212,6 +189,32 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+    /*
+        * Called when the location is changed.
+        * Get the location from the android location sensor.
+        * */
+    @Override
+    public void onLocationChanged(Location location) {
+        lng = location.getLongitude();
+        lat = location.getLatitude();
+        altitude = location.getAltitude();
+        Log.v("longitude", String.valueOf(lng));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
 
     }
 }

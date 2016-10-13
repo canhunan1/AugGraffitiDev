@@ -43,28 +43,29 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+/*
+* Show place button, collect button, gallery, score and signout.
+* Show the tags nearby.
+* Use google map service to show the map.
+* Use LocationListener to get the current location
+* */
 public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
     private GoogleMap mGoogleMap;
     private GoogleApiClient mGoogleApiClinet;
     final String tag ="GoogleMapActivity";
     private LocationRequest mLocationRequest;
     private List<Tag> tagList = null;
-    public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.MainActivity.MESSAGE";
     public final static String TAGID_MESSAGE = "com.example.jianan.auggraffiti.GoogleMapActivity.TAGID";
-    private  Marker placeMarker;
+    private Marker placeMarker;
     private Double lat =0.0;
     private Double lng =0.0;
     private TextView score = null;
-
-    final int MY_PERMISSION_CODE = 1;
     String personEmail = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if(googleServiceAvailable()){
-            // Toast.makeText(this,"Perfect", Toast.LENGTH_SHORT).show();
             setContentView(R.layout.activity_google_map);
             initMap();
         }else{
@@ -127,42 +128,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        //goToLocationZoom(33.4363619,-111.927875,30);
-//       if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-//           Log.v(tag,"before if");
-//           if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//               Log.v(tag,"not get permission");
-//               return;
-//           }
-//           Log.v(tag,"get permission");
-//        }
-//        mGoogleMap.setMyLocationEnabled(true);
-
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//            // Should we show an explanation?
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-//
-//                // Show an expanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//            } else {
-//
-//                // No explanation needed, we can request the permission.
-//
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                        MY_PERMISSION_CODE);
-//
-//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//                // app-defined int constant. The callback method gets the
-//                // result of the request.
-//            }
-//        }
         /*use google api client to simplify the permission authorization*/
         mGoogleApiClinet = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -172,6 +137,11 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         mGoogleApiClinet.connect();
         mGoogleMap.setOnMarkerClickListener(this);
     }
+    /*
+    * Called when the marker is clicked
+    * When the collect is clicked, the tag id is sent to the collectActivity
+    * When the place is clicked, the screen shows the place activity
+    * */
     @Override
     public boolean onMarkerClick(final Marker marker) {
         String[] strings = marker.getTitle().trim().split(" ");
@@ -219,8 +189,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         return super.onOptionsItemSelected(item);
     }
 
-
-
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create();
@@ -248,10 +216,16 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    /*
+    * Called when the location is changed and request the tag nearby.
+    * Get the current location using android.location.Location
+    * Use google map to update the location on the google map
+    * */
     @Override
-    public void onLocationChanged(Location location) {//when the location is changed
+    public void onLocationChanged(Location location) {
+        Log.v("GoogleMap","Location is change");
         if(location == null){
-            Toast.makeText(this,"Cant get current location", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Can't get current location", Toast.LENGTH_LONG).show();
         }else{
             Double lat = location.getLatitude();
             Double lng = location.getLongitude();
@@ -283,6 +257,9 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
     }
+    /*
+    * Set the place marker on the map
+    * */
     private void setPlaceMarker(double lat, double lng) {
         if(placeMarker != null){
             placeMarker.remove();
@@ -295,10 +272,10 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .snippet("Clicking me to place a tag");
         placeMarker = mGoogleMap.addMarker(optionsPlace);
     }
+    /*
+    *   Set the marker of tags nearby on the map
+    * */
     private Marker setCollectMarker(LatLng ll, int tagId) {
-//        if(collectMarker != null){
-//            collectMarker.remove();
-//        }
         MarkerOptions optionsCollect = new MarkerOptions()
                 .title("Collect "+String.valueOf(tagId))
                 //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
@@ -353,7 +330,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
             }
         }){
             @Override
@@ -401,8 +377,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 break;
         }
         if(intent != null) {
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-
             startActivity(intent);
         }
 
