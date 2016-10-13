@@ -158,7 +158,7 @@ protected void onCreate(Bundle savedInstanceState) {
     }
 ```
 
-Once the Google Map is started and ready for next operation, the ```onMapReady``` callback function is invoked, a ```GoogleMap``` argument is paased to this method. In ```onMapReay```, and new ```GoogleApiClient``` is ```build()``` and this Api is used to connect to the Google Map server by calling ```connect()``` method. 
+Once the Google Map is started and ready for next operation, the ```onMapReady``` callback function is invoked, a ```GoogleMap``` argument is passed to this method. In ```onMapReay```, and new ```GoogleApiClient``` is ```build()``` and this Api is used to connect to the Google Map server by calling ```connect()``` method. There is alos a ```setOnMarkerClickListener()``` method implemented here, it will tracking the clicking-marker event.
 
 ```
  public void onMapReady(GoogleMap googleMap) {
@@ -191,6 +191,50 @@ public void onConnected(Bundle bundle) {
             Log.v(tag,"get permission");
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClinet,mLocationRequest, this);
+    }
+```
+When any marker is clicked, the ```onMarkerClick``` callback function is invoked. Then it will decide which marker is clicked, either ```Collect``` marker or ```Place``` marker. Then the ```sendMessage()``` function will invoke different ```Intent``` based on clicked marker.
+
+```
+@Override
+    public boolean onMarkerClick(final Marker marker) {
+        String[] strings = marker.getTitle().trim().split(" ");
+        switch( strings[0]) {
+            case "Collect":
+                Toast.makeText(this, "Collect has been clicked ",
+                    Toast.LENGTH_SHORT).show();
+                sendMessage("Collect", strings[1]);
+                break;
+            case "Place":
+                Toast.makeText(this, "Place has been clicked ",
+                        Toast.LENGTH_SHORT).show();
+                sendMessage("Place",null);
+                break;
+        }
+        return false;
+    }
+```
+In this ```sendMessage()``` method, it will either invoke ```CollectActivity``` activity of ```PlaceActivity``` activity based on the marker that has been clicked. If ```CollectActivity``` is invoked, it will also bundle the ```tagID``` information together with the ```Intent```.
+
+```
+public void sendMessage(String activity, String tagId) {
+        Intent intent = null;
+        switch (activity){
+            case "Collect":
+                 intent = new Intent(getApplicationContext(), CollectActivity.class);
+                intent.putExtra(TAGID_MESSAGE, tagId);
+                Log.v("TAGID_MESSAGE",tagId);
+                break;
+            case "Place":
+                intent = new Intent(getApplicationContext(), PlaceActivity.class);
+                break;
+        }
+        if(intent != null) {
+            //EditText editText = (EditText) findViewById(R.id.edit_message);
+
+            startActivity(intent);
+        }
+
     }
 ```
 
