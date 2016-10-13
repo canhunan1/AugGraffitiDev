@@ -597,6 +597,90 @@ The senor data is retrived in the ```onSensorChanged()``` callback. the ```ACCEL
     }
 ```
 
+- ```CollectActivity.java``` activity defines how the tags shown on googleMap are collected, and score is updated.
+
+This activity implements in a very similar to ```PlaceActivity.java```, except in the ```onCreate()``` callback it retrieve the data intented from ```GoogleMapActivity``` using ```getStringExtra()``` method. The screen size (```screenWidth```, ```screenHeight```) is retrieved from ```getSize()``` function in ```Display``` class, which will be used later to adjust the size of collecting tag.
+
+```
+@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        ...
+        Intent intent = getIntent();
+        tagId = intent.getStringExtra(GoogleMapActivity.TAGID_MESSAGE);
+        Log.v("The collect ID is "+String.valueOf(tagId));
+        ...
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+
+    }
+```
+
+The collecting tag inforamtion is get by sending request to sever, using ```findImgFromServer()``` method. The data sent by sever is get using ```postScoreStringRequest()``` method, if we get response from sever, the retrived String is parsed including, image string ```tagInfo[0]```, ```orientation_azimuth``` string, and ```orientation_altitude``` string. The details of implementation of this method is the same as what I shown in before, please refer to ```GoogleMapActivity.class``` section.
+
+```
+public void onResponse(String response) {
+                        if(response!=null){
+                            String[] tagInfo = response.trim().split("[,]+");
+                            loadImg(tagInfo[0]);
+                            orientation_azimuth = Integer.valueOf(tagInfo[1]);
+                            Log.v("oriazimuth is" + orientation_azimuth);
+                            orientation_altitude = Integer.valueOf(tagInfo[2]);
+}
+```
+
+The tag size and orientation is adjusted through ```onSensorChanged()``` callback. The lifetime ```ACCELEROMETER``` and ```MEGNETOMETER``` dada is retrieved using ```getType()``` and ```event.values.clone()``` function. The relative size of the tag image is adjusted with a ```factor``` multiples the screen size.
+
+```
+@Override
+public void onSensorChanged(SensorEvent event) {
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                gData = event.values.clone();
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                mData = event.values.clone();
+                break;
+            default:
+                return;
+        }
+
+       ...
+
+        RelativeLayout.LayoutParams imageLayout = new RelativeLayout.LayoutParams(imageMargin);
+        imageLayout.height = (int)(screenHeight*factor);
+        imageLayout.width =  (int)(screenWidth*factor);
+        imageView.setLayoutParams(imageLayout);
+
+    }
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
