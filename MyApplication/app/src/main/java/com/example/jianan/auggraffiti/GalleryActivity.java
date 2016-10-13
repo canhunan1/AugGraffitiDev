@@ -10,12 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -59,47 +54,21 @@ public class GalleryActivity extends AppCompatActivity {
     }
     //get the Gallery information from the server
     public boolean getGallery() {
-        RequestQueue queue = Volley.newRequestQueue(this);
-
         String url = "http://roblkw.com/msa/getgallery.php";
-
         final Map<String, String> params = new HashMap<String, String>();
-
         params.put("email", "jianan205@gmail.com");
-        StringRequest stringRequest = postGalleryStringRequest(params, url);
-        queue.add(stringRequest);
+        new StringPost(this, url,
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response) {
+                        String[] imgUrl = response.trim().split("[,]+");
+                        setUpList(imgUrl);
+                    }
+                }, "Send Screen to server error",
+                params);
         return true;
     }
 
-    //post request to place
-    private StringRequest postGalleryStringRequest(final Map<String, String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
-
-                new Response.Listener<String>() {
-                    @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
-                    public void onResponse(String response) {
-                        String[] imgUrl = response.trim().split("[,]+");
-                        //Log.v("imgurl " + response);
-                        // listView.
-                        //sendMessage(personEmail);
-                        //fail to log in.
-                        setUpList(imgUrl);
-                    //    Log.v("Successfully post image");
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
-    }
     private void setUpList(String[] imgUrl){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.test,imgUrl);
 

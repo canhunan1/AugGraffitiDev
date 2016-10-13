@@ -153,7 +153,7 @@ public class PlaceActivity extends AppCompatActivity implements PictureCallback,
         Toast.makeText(this,"The tag is sent to the server", Toast.LENGTH_SHORT).show();
         return true;
     }
-    
+
     /*
     * Called when any sensor is changed.
     * Get the data from accelerometer and the magnetometer
