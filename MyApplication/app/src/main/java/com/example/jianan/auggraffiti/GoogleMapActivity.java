@@ -17,12 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -256,7 +251,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 mGoogleMap.animateCamera(update);
                 setPlaceMarker(lat, lng);// we have place marker and collect mark.
                 //get the tag information here
-                RequestQueue queue = Volley.newRequestQueue(this);
                 //post request to get the tags nearby
                 String url = "http://roblkw.com/msa/neartags.php";
                 final Map<String, String> params = new HashMap<String, String>();
@@ -269,8 +263,14 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 params.put("loc_long", lng.toString());
                 params.put("loc_lat", lat.toString());
                 // Request a string response from the provided URL.
-                StringRequest stringRequest = postTagNearByRequest(params, url);
-                queue.add(stringRequest);
+                new StringPost(this, url,
+                        new Response.Listener<String>(){
+                            @Override
+                            public void onResponse(String response) {
+                                setTagNearby(response);
+                            }
+                        }, "Send Screen to server error",
+                        params);
             }
         }
     }
@@ -301,86 +301,47 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .snippet("Clicking me to collect a tag");
         return mGoogleMap.addMarker(optionsCollect);
     }
-//post request to get the tags nearby
-    private StringRequest postTagNearByRequest(final Map<String,String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
 
-                new Response.Listener<String>() {
-                    @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
-                    public void onResponse(String response) {
-                        //The format of the response is "tagId,Latitude,Longitude"
-                        String[] tagLoc = response.trim().split("[,]+");
-                        //First we assume the format of the response never changed and the response we get is always correct
-                        //then we can get the numb int numTag = 0;
-                        int numTag = tagLoc.length%3==0?tagLoc.length/3:-1;
-                        Log.v("Collect tag","the response is "+response);
-                        if(tagList == null){
-                            tagList = new LinkedList<Tag>();
-                        }
-                        int i = numTag;
-                        Log.v("Collect tag","the number of tag nearby is "+String.valueOf(i));
-                        while(--i >=0) {//we have tags near by
-                            //  double lat = Double.valueOf(tagLoc[numTag * 3 + 1]);
-                            // LatLng ll = new LatLng(Double.valueOf(tagLoc[numTag * 3 + 1]), Double.valueOf(tagLoc[numTag * 3 + 2]));
-                            tagList.add(new Tag(Integer.valueOf(tagLoc[i * 3]), new LatLng(Double.valueOf(tagLoc[i * 3 + 2]), Double.valueOf(tagLoc[i * 3 + 1]))));
-                           setCollectMarker(tagList.get(numTag - i- 1).ll,tagList.get(numTag - i- 1).tagId);
-                        }
-                        //how to check if the response is correct?
-                        //First the number is in ascending order.followed by 2 float number.
-                        //Here we assume the number of the location must be integer. And the location must be float.
-                        //If not something is wrong we need to throw that location away.
-                        //  Log.v(tag,"the length of the tagLoc is" + String.valueOf(tagLoc.length));
+    /*
+    * @prama String response  use the response to get the tag nearby
+    * */
+    private void setTagNearby(String response){
+        //The format of the response is "tagId,Latitude,Longitude"
+        String[] tagLoc = response.trim().split("[,]+");
+        //First we assume the format of the response never changed and the response we get is always correct
+        //then we can get the numb int numTag = 0;
+        int numTag = tagLoc.length%3==0?tagLoc.length/3:-1;
+        Log.v("Collect tag","the response is "+response);
+        if(tagList == null){
+            tagList = new LinkedList<Tag>();
+        }
+        int i = numTag;
+        Log.v("Collect tag","the number of tag nearby is "+String.valueOf(i));
+        while(--i >=0) {//we have tags near by
+            //  double lat = Double.valueOf(tagLoc[numTag * 3 + 1]);
+            // LatLng ll = new LatLng(Double.valueOf(tagLoc[numTag * 3 + 1]), Double.valueOf(tagLoc[numTag * 3 + 2]));
+            tagList.add(new Tag(Integer.valueOf(tagLoc[i * 3]), new LatLng(Double.valueOf(tagLoc[i * 3 + 2]), Double.valueOf(tagLoc[i * 3 + 1]))));
+            setCollectMarker(tagList.get(numTag - i- 1).ll,tagList.get(numTag - i- 1).tagId);
+        }
+        //how to check if the response is correct?
+        //First the number is in ascending order.followed by 2 float number.
+        //Here we assume the number of the location must be integer. And the location must be float.
+        //If not something is wrong we need to throw that location away.
+        //  Log.v(tag,"the length of the tagLoc is" + String.valueOf(tagLoc.length));
 
-                        if(response==null){
-                            Log.v(tag,"response is null");
-                        }
-                        else if(response.equals("0")) {
-                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
-                            startActivity(intent);
-                        }
-                        else{
-                            Log.v(tag,response);
-                        }
-                            //mTextView.setText("Fail to sign in");
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
+        if(response==null){
+            Log.v(tag,"response is null");
+        }
+        else if(response.equals("0")) {
+            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Log.v(tag,response);
+        }
+        //mTextView.setText("Fail to sign in");
     }
-//post request to get score
-    private StringRequest postScoreStringRequest(final Map<String,String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
 
-                new Response.Listener<String>() {
-                    @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
-                    public void onResponse(String response) {
-                        Log.v(tag,response);
-                        if(score == null){
-                            score = (TextView) findViewById(R.id.score);
-                        }
-                        score.setText(response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
-    }
     public void sendMessage(String activity, String tagId) {
         Intent intent = null;
         switch (activity){
