@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 public class ImageActivity extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.Gallery.MESSAGE";
     private ImageView imageView ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
