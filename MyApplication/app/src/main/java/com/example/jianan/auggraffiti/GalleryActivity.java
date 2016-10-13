@@ -22,6 +22,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.HashMap;
 import java.util.Map;
+/*
+* Used to show a list of urls when the gallery button in clicked in the GoogleMapActivity
+* */
 public class GalleryActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.Gallery.MESSAGE";
     ListView listView;
@@ -43,7 +46,7 @@ public class GalleryActivity extends AppCompatActivity {
                 showImage(textView.getText().toString());
             }
         });
-        getGallary();
+        getGallery();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -54,9 +57,8 @@ public class GalleryActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_MESSAGE, imgUrl);
         startActivity(intent);
     }
-    public boolean getGallary() {
-        // personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        //send request to get score
+    //get the Gallery information from the server
+    public boolean getGallery() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         String url = "http://roblkw.com/msa/getgallery.php";
@@ -64,13 +66,13 @@ public class GalleryActivity extends AppCompatActivity {
         final Map<String, String> params = new HashMap<String, String>();
 
         params.put("email", "jianan205@gmail.com");
-        StringRequest stringRequest = postScoreStringRequest(params, url);
+        StringRequest stringRequest = postGalleryStringRequest(params, url);
         queue.add(stringRequest);
         return true;
     }
 
     //post request to place
-    private StringRequest postScoreStringRequest(final Map<String, String> params, final String url) {
+    private StringRequest postGalleryStringRequest(final Map<String, String> params, final String url) {
         return new StringRequest(Request.Method.POST, url,
 
                 new Response.Listener<String>() {
