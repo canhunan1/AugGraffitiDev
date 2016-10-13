@@ -657,11 +657,55 @@ public void onSensorChanged(SensorEvent event) {
     }
 ```
 
+- ```GalleryActivity.java``` activity stores the collected images.
 
+In this ```onCreate()``` callback, it initiated the ```ListView``` which stores all the collected images. The ```getGallary()``` method post a request to sever to load the images, the sever sends back the image url which is used to update the gallery's ```ListView``` using ```setUpList()``` method. The ```showImage()``` method opens the clicked images in another activity which is called through ```Intent``` class.
+```
+ @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_gallery);
+        listView = (ListView) findViewById(R.id.list);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               TextView textView = (TextView) view;
+                showImage(textView.getText().toString());
+            }
+        });
+        getGallary();
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+```
 
+```
+   public boolean getGallary() {
+        RequestQueue queue = Volley.newRequestQueue(this);
 
+        String url = "http://roblkw.com/msa/getgallery.php";
 
+        final Map<String, String> params = new HashMap<String, String>();
 
+        params.put("email", "jianan205@gmail.com");
+        StringRequest stringRequest = postScoreStringRequest(params, url);
+        queue.add(stringRequest);
+        return true;
+    }
+```
+```
+    public void showImage(String imgUrl){
+        Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, imgUrl);
+        startActivity(intent);
+    }
+```
+```
+private void setUpList(String[] imgUrl){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.test,imgUrl);
+
+        listView.setAdapter(adapter);
+    }
+```
 
 
 
