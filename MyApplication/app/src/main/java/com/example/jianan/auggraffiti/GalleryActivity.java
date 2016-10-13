@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,6 +37,7 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
         Intent intent = getIntent();
         personalEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
+        Log.v("Gallery","the personal email is"+personalEmail);
 
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
