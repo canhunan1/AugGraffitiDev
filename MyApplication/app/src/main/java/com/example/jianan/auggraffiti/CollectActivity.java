@@ -221,13 +221,8 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         params.put("collect_img", imgString);
         new StringPost(this, url,
                 new Response.Listener<String>(){
-
                     @Override
                     public void onResponse(String response) {
-                        if(response.equals('0')) {
-                            Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
-                            startActivity(intent);
-                        }
                     }
                 }, "Send Screen to server error",
         params);

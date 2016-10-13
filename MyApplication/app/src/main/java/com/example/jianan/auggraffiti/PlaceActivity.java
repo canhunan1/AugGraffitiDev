@@ -64,6 +64,8 @@ public class PlaceActivity extends AppCompatActivity implements PictureCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
+        Intent intent = getIntent();
+        personEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -80,11 +82,9 @@ public class PlaceActivity extends AppCompatActivity implements PictureCallback,
             public void onClick(View v) {
                 btnSave.setTextColor(Color.RED);
                 sendImageToServer(graph.saveCanvasToBitmap());
-
             }
         });
-        Intent intent = getIntent();
-        personEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
+
     }
     /*
     * Register the accelerometer and magnetometer in the onResume as the documentation in android developer
@@ -144,8 +144,15 @@ public class PlaceActivity extends AppCompatActivity implements PictureCallback,
         params.put("loc_lat", String.valueOf(lat));
         params.put("orient_azimuth", String.valueOf(azimuth));
         params.put("orient_altitude", String.valueOf(altitude));
-        StringRequest stringRequest = postPlaceStringRequest(params, url);
-        queue.add(stringRequest);
+        new StringPost(this, url,
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, "Send Screen to server error",
+                params);
+       /* StringRequest stringRequest = postPlaceStringRequest(params, url);
+        queue.add(stringRequest);*/
         Toast.makeText(this,"The tag is sent to the server", Toast.LENGTH_SHORT).show();
         return true;
     }
