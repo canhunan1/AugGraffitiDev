@@ -4,6 +4,7 @@ import android.hardware.Camera;
 
 /**
  * Created by Jianan on 9/22/2016.
+ *
  */
 public class CameraHelper {
     public static boolean cameraAvailable(Camera camera) {
