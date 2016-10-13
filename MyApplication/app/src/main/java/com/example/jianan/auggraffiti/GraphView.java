@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * Created by Jianan on 9/22/2016.
  */
-public class Graphique extends View{
+public class GraphView extends View{
     private Path path = new Path();
     private Paint paint  = new Paint();
     private float startX = 0;
@@ -24,18 +24,18 @@ public class Graphique extends View{
     private float endX = 0;
     private float endY = 0;
     private Canvas canvas ;
-    public Graphique(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GraphView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         // TODO Auto-generated constructor stub
         init(attrs, defStyleAttr);
     }
-    public Graphique(Context context) {
+    public GraphView(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
         init(null, 0);
 
     }
-    public Graphique(Context context, AttributeSet attrs) {
+    public GraphView(Context context, AttributeSet attrs) {
         super(context,attrs);
         // TODO Auto-generated constructor stub
         init(attrs, 0);
@@ -54,14 +54,12 @@ public class Graphique extends View{
         this.buildDrawingCache(true);
         Bitmap bitmap = getDrawingCache();
         if(bitmap == null){
-            Log.v("bitmap is null");
             return null;
         }
         else{
             bitmap.compress(Bitmap.CompressFormat.JPEG, 0, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream .toByteArray();
             String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
-            Log.v("the length of the compress string is" + String.valueOf(base64.length()));
             return base64;
         }
     }

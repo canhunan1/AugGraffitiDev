@@ -172,63 +172,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         mGoogleApiClinet.connect();
         mGoogleMap.setOnMarkerClickListener(this);
     }
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           String permissions[], int[] grantResults) {
-//        switch (requestCode) {
-//            case MY_PERMISSION_CODE: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                    // permission was granted, yay! Do the
-//                    // contacts-related task you need to do.
-//                    mGoogleApiClinet = new GoogleApiClient.Builder(this)
-//                            .addApi(LocationServices.API)
-//                            .addConnectionCallbacks(this)
-//                            .addOnConnectionFailedListener(this)
-//                            .build();
-//                    mGoogleApiClinet.connect();
-//                    mGoogleMap.setOnMarkerClickListener(this);
-//
-//                } else {
-//
-//                    // permission denied, boo! Disable the
-//                    // functionality that depends on this permission.
-//                    Toast.makeText(this, "The application can't use your location, please set it", Toast.LENGTH_SHORT).show();                }
-//                return;
-//            }
-//
-//            // other 'case' lines to check for other
-//            // permissions this app might request
-//        }
-//    }
-
-//    private void goToLocation(double lat, double lng) {
-//        LatLng ll = new LatLng(lat,lng);
-//        CameraUpdate update = CameraUpdateFactory.newLatLng(ll);
-//        mGoogleMap.moveCamera(update);
-//    }
-//
-//    private void goToLocationZoom(double lat, double lng, int zoom) {
-//        LatLng ll = new LatLng(lat,lng);
-//        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,zoom);
-//        mGoogleMap.moveCamera(update);
-//    }
-
-//    public void geoLocate(View view) throws IOException {
-//        EditText et = (EditText) findViewById(R.id.editText);
-//        String location = et.getText().toString();
-//        Geocoder gc = new Geocoder(this);
-//        List<Address> list = gc.getFromLocationName(location,1);
-//        Address address = list.get(0);
-//        String locality = address.getLocality();
-//        Toast.makeText(this, locality, Toast.LENGTH_SHORT).show();
-//        double lat = address.getLatitude();
-//        double lng = address.getLongitude();
-//        goToLocationZoom(lat, lng,15);
-//    }
-
     @Override
     public boolean onMarkerClick(final Marker marker) {
         String[] strings = marker.getTitle().trim().split(" ");

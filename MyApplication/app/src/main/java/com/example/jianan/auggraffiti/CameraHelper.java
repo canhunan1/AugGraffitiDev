@@ -16,7 +16,6 @@ public class CameraHelper {
             c = Camera.open();
         } catch (Exception e) {
             // Camera is not available or doesn't exist
-            Log.d("getCamera failed", e);
         }
         return c;
     }

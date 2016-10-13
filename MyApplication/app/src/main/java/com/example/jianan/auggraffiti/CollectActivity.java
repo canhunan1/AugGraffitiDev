@@ -65,7 +65,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
             @Override
             public void onClick(View v) {
                 buttonCollect.setTextColor(Color.RED);
-                Log.v("Click the button");
+                //Log.v("Click the button");
                 sendScreenToServer(saveScreenToBitmap());
             }
         });
@@ -74,7 +74,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         // available at all
         Intent intent = getIntent();
         tagId = intent.getStringExtra(GoogleMapActivity.TAGID_MESSAGE);
-        Log.v("The collect ID is "+String.valueOf(tagId));
+        //Log.v("The collect ID is "+String.valueOf(tagId));
         camera = CameraHelper.getCameraInstance();
         if (CameraHelper.cameraAvailable(camera)) {
             initCameraPreview();
@@ -144,7 +144,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
                             String[] tagInfo = response.trim().split("[,]+");
                             loadImg(tagInfo[0]);
                             orientation_azimuth = Integer.valueOf(tagInfo[1]);
-                            Log.v("oriazimuth is" + orientation_azimuth);
+                     //       Log.v("oriazimuth is" + orientation_azimuth);
                             orientation_altitude = Integer.valueOf(tagInfo[2]);
 /*
 //                            try {
@@ -168,7 +168,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
 
                         }
                         else{
-                            Log.v("the response is null");
+                     //       Log.v("the response is null");
                         }
 //                        android.util.Log.v(tag,response);
 //                        if(score == null){
@@ -211,7 +211,7 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         ViewGroup.MarginLayoutParams imageMargin = new ViewGroup.MarginLayoutParams(
                 imageView.getLayoutParams());
         int size;
-        Log.v("the orientation is "+Math.abs(orientation_azimuth-mAzimuth));
+     //   Log.v("the orientation is "+Math.abs(orientation_azimuth-mAzimuth));
 
         float diff = (float)Math.abs(orientation_azimuth-mAzimuth);
         float factor;
@@ -219,8 +219,8 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
             factor = -(float)Math.exp(-diff/1000.0)+1;
         else
             factor = (float)0.5;
-        Log.v("factor  "+factor);
-        Log.v("the ori is " + event.values[1]);
+      //  Log.v("factor  "+factor);
+    //    Log.v("the ori is " + event.values[1]);
         //imageMargin.setMargins( 20, 10, 0, 0);
         RelativeLayout.LayoutParams imageLayout = new RelativeLayout.LayoutParams(imageMargin);
         imageLayout.height = (int)(screenHeight*factor);
@@ -261,13 +261,13 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
                     @Override
                     // no idea why enter in this function 3 times when just sending GPS information just once.
                     public void onResponse(String response) {
-                        Log.v("collect response " + response);
-                        if (response.equals("0")) // when get 0, log in successfully
+                      //  Log.v("collect response " + response);
+                      /*  if (response.equals("0")) // when get 0, log in successfully
                             //sendMessage(personEmail);
                             //fail to log in.
-                            Log.v("Successfully collect image");
+                         //   Log.v("Successfully collect image");
                         else
-                            Log.v("Error happens when posting the img");
+                          //  Log.v("Error happens when posting the img");*/
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -288,14 +288,14 @@ public class CollectActivity extends AppCompatActivity implements SensorEventLis
         v1.setDrawingCacheEnabled(false);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         if(bitmap == null){
-            Log.v("bitmap is null");
+         //   Log.v("bitmap is null");
             return null;
         }
         else{
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream .toByteArray();
             String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
-            Log.v("the length of the compress string is" + String.valueOf(base64.length()));
+         //   Log.v("the length of the compress string is" + String.valueOf(base64.length()));
             return base64;
         }
     }

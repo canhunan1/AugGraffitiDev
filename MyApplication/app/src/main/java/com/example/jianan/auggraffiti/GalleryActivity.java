@@ -78,12 +78,12 @@ public class GalleryActivity extends AppCompatActivity {
                     // no idea why enter in this function 3 times when just sending GPS information just once.
                     public void onResponse(String response) {
                         String[] imgUrl = response.trim().split("[,]+");
-                        Log.v("imgurl " + response);
+                        //Log.v("imgurl " + response);
                         // listView.
                         //sendMessage(personEmail);
                         //fail to log in.
                         setUpList(imgUrl);
-                        Log.v("Successfully post image");
+                    //    Log.v("Successfully post image");
 
                     }
                 }, new Response.ErrorListener() {
