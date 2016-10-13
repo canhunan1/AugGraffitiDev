@@ -257,6 +257,39 @@ private StringRequest postTagNearByRequest(final Map<String,String> params, fina
     
     }
 ```
+Similar to ```postTagNearByRequest()```, the ```postScoreStringRequest()``` method is used to post request to server to get the score updated. It has two input argument, which is ```Map``` and ```String```, the id, location information is stored in ```Map<String,String>``` input argument, the url information is store in ```String``` argument. This mehod return a ```StringRequest``` object which has four input argument, i.e. ```Request.Method.POST```, ```url```, ```Response.Listener``` and ```onErrorResponse```. There is a callback function```onResponse``` in the ```Response.Listener``` anonymous inner class. When the server has a response, the reponse string is stored in the input argument of ```onResponse``` callback. And the score value is stored in the ```score``` textView.
+ 
+
+```
+private StringRequest postScoreStringRequest(final Map<String,String> params, final String url) {
+        return new StringRequest(Request.Method.POST, url,
+
+                new Response.Listener<String>() {
+                    @Override
+                    // no idea why enter in this function 3 times when just sending GPS information just once.
+                    public void onResponse(String response) {
+                        Log.v(tag,response);
+                        if(score == null){
+                            score = (TextView) findViewById(R.id.score);
+                        }
+                        score.setText(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
+    }
+```
+
+
+
 
 ```
 private Marker setCollectMarker(LatLng ll){
