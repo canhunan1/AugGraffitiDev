@@ -7,7 +7,7 @@ import android.os.Message;
  * Created by Jianan on 9/22/2016.
  */
 public class Log {
-    private static final String TAG = "CameraSpike";
+    private static final String TAG = "CameraSpike"
 
     public static void d(String msg) {
         d(msg, null);
