@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Created by Jianan on 9/12/2016.
- *
+ * This class is used to send the string post to the php server
  */
 public class StringPost {
     // Request a string response from the provided URL.
@@ -34,11 +34,14 @@ public class StringPost {
         queue.add(stringRequest);
     };
 
+    /*
+    * @param Map params  the parameters posted to the server
+    * @param String url is url to post the request to
+    * @return StringRequest is the request string
+    * */
     private StringRequest postScreenStringRequest(final Map<String, String> params, final String url) {
         return new StringRequest(Request.Method.POST, url,
-
                 responseListener, new Response.ErrorListener(){
-
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.v(ERROR_MESSAGE, errorMessage);
