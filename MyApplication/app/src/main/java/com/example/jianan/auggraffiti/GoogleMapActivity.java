@@ -71,10 +71,15 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             initMap();
         }else{
             // No Google map layout;
+            finish();
         }
+        Intent intent = getIntent();
+        //get user's email from main activity
+        personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         //set score text view
         score = (TextView) findViewById(R.id.score);
-
+        //send request to get score
+        showScore();
         Button buttonGallery = (Button) findViewById(R.id.gallery);
         buttonGallery.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -91,20 +96,31 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                 startActivity(intent);
             }
         });
+    }
 
-        Intent intent = getIntent();
-        //get user's email from main activity
-        personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        //send request to get score
-        RequestQueue queue = Volley.newRequestQueue(this);
+    /*
+    * Get the score from the server.
+    * */
+    private void showScore(){
         String url = "http://roblkw.com/msa/getscore.php";
 
         final Map<String, String> params = new HashMap<String, String>();
 
         params.put("email", personEmail);
-        StringRequest stringRequest = postScoreStringRequest(params, url);
-        queue.add(stringRequest);
+        new StringPost(this, url,
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response) {
+                        Log.v(tag,response);
+                        if(score == null){
+                            score = (TextView) findViewById(R.id.score);
+                        }
+                        score.setText(response);
+                    }
+                }, "Send Screen to server error",
+                params);
     }
+
 
     private void initMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
