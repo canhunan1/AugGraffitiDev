@@ -28,11 +28,15 @@ public class GalleryActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private String personalEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        Intent intent = getIntent();
+        personalEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
+
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -56,7 +60,7 @@ public class GalleryActivity extends AppCompatActivity {
     public boolean getGallery() {
         String url = "http://roblkw.com/msa/getgallery.php";
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("email", "jianan205@gmail.com");
+        params.put("email", personalEmail);
         new StringPost(this, url,
                 new Response.Listener<String>(){
                     @Override

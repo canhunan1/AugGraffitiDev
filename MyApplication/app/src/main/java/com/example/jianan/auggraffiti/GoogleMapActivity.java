@@ -80,6 +80,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             public void onClick(View v) {
                 // When gallery button is clicked, we will switch to another screen
                 Intent intent = new Intent(getApplicationContext(), GalleryActivity.class);
+                intent.putExtra(PERSONAL_EMAIL, personEmail);
                 startActivity(intent);
             }
         });
