@@ -1,7 +1,7 @@
 # AugGraffitiDev
 ## Author
 By Jianan Yang and Wenhao Chen
-## Summary
+## Goal
 AugGraffiti is a mobile application on the Android for users to create their own Graffiti on there mobile device. 
 
 ## Install
@@ -16,7 +16,7 @@ debug {
             storePassword '940205'
         }
 ```
-## Usage
+## Design
 A complete AugGraffitiDev consists 5 different screens, i.e. Login, Map, Place, Collect and Gallery. As of now, users can only interact with Login and Map screen. The other three screens will be developed and added to this app in next step.
 
 Step 1: To open the app, click the icon named "MyApplication". Once it is opened succeffully, the Login screen pops up.
@@ -46,7 +46,7 @@ Step 6: The two picture below show the gallary. When you click the "GALLERY" but
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371426/be4e61f6-9167-11e6-83e6-18324d97940f.png) Gallery screen-2
 
 
-## App Details
+## Design (coding part)
 This app is developed in Android Studio. The entire codes is composed of two major parts - .xml and .java file. The .xml files define the layouts of user interface while the .java files form the backbone of this application and enable the functionalies.
 
 The .xml files are stored in ```app\src\main\res\layout``` folder:
@@ -781,10 +781,11 @@ private void setUpList(String[] imgUrl){
     }
 ```
 
+## Strategy
 
+## Challenges
 
-
-
+## Improvement
 
 
 
