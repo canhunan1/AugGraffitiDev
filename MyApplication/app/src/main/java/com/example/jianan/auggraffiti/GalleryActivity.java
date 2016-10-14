@@ -4,24 +4,23 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.HashMap;
 import java.util.Map;
+/*
+* Used to show a list of urls when the gallery button in clicked in the GoogleMapActivity
+* */
 public class GalleryActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "com.example.jianan.auggraffiti.Gallery.MESSAGE";
     ListView listView;
@@ -30,11 +29,16 @@ public class GalleryActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private String personalEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        Intent intent = getIntent();
+        personalEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
+        Log.v("Gallery","the personal email is"+personalEmail);
+
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -43,7 +47,7 @@ public class GalleryActivity extends AppCompatActivity {
                 showImage(textView.getText().toString());
             }
         });
-        getGallary();
+        getGallery();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -54,50 +58,23 @@ public class GalleryActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_MESSAGE, imgUrl);
         startActivity(intent);
     }
-    public boolean getGallary() {
-        // personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        //send request to get score
-        RequestQueue queue = Volley.newRequestQueue(this);
-
+    //get the Gallery information from the server
+    public boolean getGallery() {
         String url = "http://roblkw.com/msa/getgallery.php";
-
         final Map<String, String> params = new HashMap<String, String>();
-
-        params.put("email", "jianan205@gmail.com");
-        StringRequest stringRequest = postScoreStringRequest(params, url);
-        queue.add(stringRequest);
+        params.put("email", personalEmail);
+        new StringPost(this, url,
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response) {
+                        String[] imgUrl = response.trim().split("[,]+");
+                        setUpList(imgUrl);
+                    }
+                }, "Send Screen to server error",
+                params);
         return true;
     }
 
-    //post request to place
-    private StringRequest postScoreStringRequest(final Map<String, String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
-
-                new Response.Listener<String>() {
-                    @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
-                    public void onResponse(String response) {
-                        String[] imgUrl = response.trim().split("[,]+");
-                        Log.v("imgurl " + response);
-                        // listView.
-                        //sendMessage(personEmail);
-                        //fail to log in.
-                        setUpList(imgUrl);
-                        Log.v("Successfully post image");
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
-    }
     private void setUpList(String[] imgUrl){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.test,imgUrl);
 

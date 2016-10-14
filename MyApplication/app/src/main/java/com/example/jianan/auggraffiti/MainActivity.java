@@ -11,12 +11,7 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -28,7 +23,10 @@ import com.google.android.gms.common.api.Status;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/*
+* This activity is used to log in the google service and jump to Googlemap Activity automatically
+* Post request to the server to log in.
+* */
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private TextView loginTextView ;
@@ -63,6 +61,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
+    /*
+    * Called when get the signin result from the google service.
+    * If successfully sign in the google service, send the user email to the server.
+    * */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -73,37 +75,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             if(result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 personEmail = account.getEmail();
-
-//            final Map<String,String> params = new HashMap<String,String>();
-//            params.put("email", personEmail);
-//            new StringPost("/login.php",
-//                    new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            if(response.equals("0")) {
-//                                Intent intent = new Intent(getApplicationContext(), GoogleMapActivity.class);
-//                                startActivity(intent);
-//                            }
-//                            else
-//                                loginTextView.setText("Fail to sign in");
-//                        }},
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            loginTextView.setText("That didn't work!");
-//                        }},
-//                    params)
-//                    .sendRequest(this);
-                // Instantiate the RequestQueue.
-                RequestQueue queue = Volley.newRequestQueue(this);
                 String url = "http://roblkw.com/msa/login.php";
                 final Map<String, String> params = new HashMap<String, String>();
                 params.put("email", personEmail);
-                // Request a string response from the provided URL.
-                StringRequest stringRequest = postStringRequest(params, url);
-                //stringRequest.getParams();
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
+
+                new StringPost(this, url,
+                        new Response.Listener<String>(){
+                            @Override
+                            public void onResponse(String response) {
+                                if(response.equals("0")) // when get 0, log in successfully
+                                    sendMessage(personEmail);
+                                    //fail to log in.
+                                else
+                                    loginTextView.setText("Fail to sign in");
+                            }
+                        }, "Send Screen to server error",
+                        params);
                 Log.v(TAG, personEmail);
             }
             else{
@@ -112,32 +99,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
 
         }
-    }
-
-    @NonNull
-    //post request to log in
-    private StringRequest postStringRequest(final Map<String,String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if(response.equals("0")) // when get 0, log in successfully
-                            sendMessage(personEmail);
-                        //fail to log in.
-                        else
-                            loginTextView.setText("Fail to sign in");
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                loginTextView.setText("That didn't work!");
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
     }
 
     @Override

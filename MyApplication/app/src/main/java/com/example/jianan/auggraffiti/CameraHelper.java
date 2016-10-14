@@ -4,6 +4,7 @@ import android.hardware.Camera;
 
 /**
  * Created by Jianan on 9/22/2016.
+ * To check if the camera is available in the device.
  */
 public class CameraHelper {
     public static boolean cameraAvailable(Camera camera) {
@@ -16,7 +17,6 @@ public class CameraHelper {
             c = Camera.open();
         } catch (Exception e) {
             // Camera is not available or doesn't exist
-            Log.d("getCamera failed", e);
         }
         return c;
     }

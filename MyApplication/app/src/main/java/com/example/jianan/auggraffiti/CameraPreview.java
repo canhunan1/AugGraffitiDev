@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-//import android.graphics.Camera;
 
 /**
  * Created by Jianan on 9/22/2016.
@@ -50,7 +49,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             camera.setPreviewDisplay(holder);
             camera.startPreview();
         } catch (Exception e) {
-            //Log.d("Error setting camera preview", e);
         }
     }
 

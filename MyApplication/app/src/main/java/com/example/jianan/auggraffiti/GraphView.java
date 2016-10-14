@@ -15,33 +15,31 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Created by Jianan on 9/22/2016.
+ * Used to draw the graph by finger
+ * And save the graph into Base64 string
  */
-public class Graphique extends View{
+public class GraphView extends View{
     private Path path = new Path();
     private Paint paint  = new Paint();
-    private float startX = 0;
-    private float startY = 0;
-    private float endX = 0;
-    private float endY = 0;
-    private Canvas canvas ;
-    public Graphique(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GraphView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         // TODO Auto-generated constructor stub
-        init(attrs, defStyleAttr);
+        init();
     }
-    public Graphique(Context context) {
+    public GraphView(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        init(null, 0);
+        init();
 
     }
-    public Graphique(Context context, AttributeSet attrs) {
+    public GraphView(Context context, AttributeSet attrs) {
         super(context,attrs);
         // TODO Auto-generated constructor stub
-        init(attrs, 0);
+        init();
     }
 
-    private void init(AttributeSet attrs, int defStyleAttr){
+    // initialize the paint.
+    private void init(){
         paint.setColor(Color.RED);
         paint.setAntiAlias(true);
         paint.setStrokeJoin(Paint.Join.ROUND);
@@ -49,43 +47,38 @@ public class Graphique extends View{
         paint.setStrokeWidth(5f);
         this.setDrawingCacheEnabled(true);
     }
+    /*
+    *   Get the graph from the cache and convert it to the bitmap and compress it into Base64 String
+    * @return String the image in the cache and converted to base64 bitmap
+    * */
     public String saveCanvasToBitmap(){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         this.buildDrawingCache(true);
         Bitmap bitmap = getDrawingCache();
         if(bitmap == null){
-            Log.v("bitmap is null");
             return null;
         }
         else{
             bitmap.compress(Bitmap.CompressFormat.JPEG, 0, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream .toByteArray();
-            String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
-            Log.v("the length of the compress string is" + String.valueOf(base64.length()));
-            return base64;
+            return Base64.encodeToString(byteArray, Base64.NO_WRAP);
         }
     }
 
     @Override
     protected void onDraw(final Canvas canvas) {
-
-        this.canvas = canvas;
         canvas.drawColor(Color.TRANSPARENT);
-
-
-        paint.setColor(Color.RED);
-        canvas.drawCircle(50, 50, 40, paint);
-        paint.setColor(Color.RED);
-
-        canvas.drawLine(startX,startY, endX,endY, paint);
-
         canvas.drawPath(path, paint);
     }
+
+    /*
+    * Called when the screen is touched
+    * Store the movement path into path
+     */
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent){
         float motionX = motionEvent.getX();
         float motionY = motionEvent.getY();
-
         switch(motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
                 path.moveTo(motionX,motionY);
@@ -97,7 +90,6 @@ public class Graphique extends View{
                 break;
         }
         invalidate();
-
         return true;
     }
 }

@@ -1,6 +1,6 @@
 package com.example.jianan.auggraffiti;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -10,148 +10,87 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.location.LocationListener;
-import android.net.Uri;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RatingBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
-
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-//mport com.blundell.tut.cameraoverlay.FromXML;
-
 /**
- * Takes a photo saves it to the SD card and returns the path of this photo to
- * the calling Activity
- *
- * @author paul.blundell
+ * When user clicked on the P on the screen of GoogleMapActivity, they can be directed to this activity.
+ * This activity is used to draw tag with camera is on.
+ * Compress the drawing tag into Base64 and send it to the server.
+ * @author Jianan
  */
-public class PlaceActivity extends Activity implements PictureCallback, LocationListener, SensorEventListener {
-
-    protected static final String EXTRA_IMAGE_PATH = "com.example.jianan.auggraffiti.CameraActivity.EXTRA_IMAGE_PATH";
-
+public class PlaceActivity extends AppCompatActivity implements PictureCallback,LocationListener, SensorEventListener {
     private Camera camera;
     private CameraPreview cameraPreview;
-    Button btn;
-    private Graphique graph;
-    TextView txt;
-    Calendar cal;
-    RatingBar rt;
-    Boolean visible = false;
-    EditText edi;
+    private GraphView graph;
     Button btnSave;
     double lng;
     double lat;
     double altitude;
     private LocationManager locationManager;
-    private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
-    private Sensor mMagnetometer;
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private Sensor magnetometer;
     private float[] gData = new float[3]; // accelerometer
     private float[] mData = new float[3]; // magnetometer
     private float[] rMat = new float[9];
     private float[] iMat = new float[9];
     private float[] orientation = new float[3];
-    private int mAzimuth;
+    private int azimuth;
+    String personEmail = null;
     /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
+    * Constructor
+    *Setup the activity; Check if the camera is available.
+    *
      */
-    private GoogleApiClient client;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
-        setResult(RESULT_CANCELED);
-        // Camera may be in use by another activity or the system or not
-        // available at all
+        Intent intent = getIntent();
+        personEmail = intent.getStringExtra(GoogleMapActivity.PERSONAL_EMAIL);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mMagnetometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = this.sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         camera = CameraHelper.getCameraInstance();
-        if (CameraHelper.cameraAvailable(camera)) {
+        if (CameraHelper.cameraAvailable(camera))
             initCameraPreview();
-        } else {
+        else
             finish();
-        }
-
-        // btn = (Button) findViewById(R.id.button1);
-        graph = (Graphique) findViewById(R.id.graph);
-        graph.setVisibility(View.VISIBLE);
+        graph = (GraphView) findViewById(R.id.graph);
         btnSave = (Button) findViewById(R.id.button_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btnSave.setTextColor(Color.RED);
-                Log.v("Click the button");
                 sendImageToServer(graph.saveCanvasToBitmap());
             }
         });
-//        txt = (TextView) findViewById(R.id.date);
-//
-//        rt = (RatingBar) findViewById(R.id.ratingBar1);
-//        edi = (EditText) findViewById(R.id.editText1);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                if (!visible) {
-//
-//                    graph.setVisibility(View.VISIBLE);
-//                    rt.setVisibility(View.VISIBLE);
-//                    edi.setVisibility(View.VISIBLE);
-//                    txt.setVisibility(View.VISIBLE);
-//                    txt.setText("Camera View :001 /10/04/2014 thread ");
-//
-//                    txt.setText("Camera View :001 /10/04/2014");
-//                    btn.setText("Masquer Graphique");
-//
-//                } else {
-//
-//                    graph.setVisibility(View.INVISIBLE);
-//                    txt.setVisibility(View.INVISIBLE);
-//                    rt.setVisibility(View.INVISIBLE);
-//                    edi.setVisibility(View.INVISIBLE);
-//                    btn.setText("Afficher Graphique");
-//                }
-//                visible = !visible;
-//            }
-//        });
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
+    /*
+    * Register the accelerometer and magnetometer in the onResume as the documentation in android developer
+    * */
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_GAME);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -172,141 +111,85 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
         cameraPreview.init(camera);
     }
 
-    public void onCaptureClick(View button) {
-        // Take a picture with a callback when the photo has been created
-        // Here you can add callbacks if you want to give feedback when the
-        // picture is being taken
-        camera.takePicture(null, null, this);
-    }
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
-//        Log.d("Picture taken");
-//        String path = savePictureToFileSystem(data);
-//        setResult(path);
-//        finish();
     }
 
-//    private static String savePictureToFileSystem(byte[] data) {
-//        File file = MediaHelper.getOutputMediaFile();
-//        MediaHelper.saveToFile(data, file);
-//        return file.getAbsolutePath();
-//    }
-
-//    private void setResult(String path) {
-//        Intent intent = new Intent();
-//        intent.putExtra(EXTRA_IMAGE_PATH, path);
-//        setResult(RESULT_OK, intent);
-//    }
-
-    // ALWAYS remember to release the camera when you are finished
+    /*
+    * Release the camera when you are finished
+    * Unregister the camera when the activity is paused
+    * */
     @Override
     protected void onPause() {
         super.onPause();
-        releaseCamera();
-        mSensorManager.unregisterListener(this);
-    }
-
-    private void releaseCamera() {
         if (camera != null) {
             camera.release();
             camera = null;
         }
+        sensorManager.unregisterListener(this);
     }
 
+
     public boolean sendImageToServer(String imgString) {
-        // personEmail = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        //send request to get score
         RequestQueue queue = Volley.newRequestQueue(this);
-
         String url = "http://roblkw.com/msa/placetag.php";
-
         final Map<String, String> params = new HashMap<String, String>();
-
-        params.put("email", "jianan205@gmail.com");
+        params.put("email", personEmail);
         params.put("tag_img", imgString);
         params.put("loc_long", String.valueOf(lng));
         params.put("loc_lat", String.valueOf(lat));
-        params.put("orient_azimuth", String.valueOf(mAzimuth));
+        params.put("orient_azimuth", String.valueOf(azimuth));
         params.put("orient_altitude", String.valueOf(altitude));
-        StringRequest stringRequest = postScoreStringRequest(params, url);
-        queue.add(stringRequest);
+        new StringPost(this, url,
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, "Send Screen to server error",
+                params);
+       /* StringRequest stringRequest = postPlaceStringRequest(params, url);
+        queue.add(stringRequest);*/
+        Toast.makeText(this,"The tag is sent to the server", Toast.LENGTH_SHORT).show();
         return true;
     }
 
-    //post request to place
-    private StringRequest postScoreStringRequest(final Map<String, String> params, final String url) {
-        return new StringRequest(Request.Method.POST, url,
-
-                new Response.Listener<String>() {
-                    @Override
-                    // no idea why enter in this function 3 times when just sending GPS information just once.
-                    public void onResponse(String response) {
-                        if (response.equals("0")) // when get 0, log in successfully
-                            //sendMessage(personEmail);
-                            //fail to log in.
-                            Log.v("Successfully post image");
-                        else
-                            Log.v("Error happens when posting the img");
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }
-        };
+    /*
+    * Called when any sensor is changed.
+    * Get the data from accelerometer and the magnetometer
+    * */
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                gData = event.values.clone();
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                mData = event.values.clone();
+                break;
+            default:
+                return;
+        }
+        if (SensorManager.getRotationMatrix(rMat, iMat, gData, mData)) {
+            azimuth = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
+        }
     }
+
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Place Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.jianan.auggraffiti/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Place Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.jianan.auggraffiti/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-
+    /*
+        * Called when the location is changed.
+        * Get the location from the android location sensor.
+        * */
     @Override
     public void onLocationChanged(Location location) {
         lng = location.getLongitude();
         lat = location.getLatitude();
         altitude = location.getAltitude();
+        Log.v("longitude", String.valueOf(lng));
     }
 
     @Override
@@ -321,32 +204,6 @@ public class PlaceActivity extends Activity implements PictureCallback, Location
 
     @Override
     public void onProviderDisabled(String provider) {
-
-    }
-
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        float[] data;
-        switch (event.sensor.getType()) {
-            case Sensor.TYPE_ACCELEROMETER:
-                gData = event.values.clone();
-                break;
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                mData = event.values.clone();
-                break;
-            default:
-                return;
-        }
-
-        if (SensorManager.getRotationMatrix(rMat, iMat, gData, mData)) {
-            mAzimuth = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
-        }
-    }
-
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 }

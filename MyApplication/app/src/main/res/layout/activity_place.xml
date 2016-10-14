@@ -13,19 +13,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true" />
 
-    <!--<Button-->
-    <!--android:id="@+id/button1"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_marginBottom="54dp"-->
-    <!--android:layout_marginLeft="98dp"-->
-    <!--android:onClick="onCaptureClick"-->
-    <!--android:padding="@dimen/padding_medium"-->
-    <!--android:text="Afficher graphique" />-->
 
-    <com.example.jianan.auggraffiti.Graphique
+    <com.example.jianan.auggraffiti.GraphView
         android:id="@+id/graph"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
