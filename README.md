@@ -802,14 +802,24 @@ After completing all the check points, we successfully designed the app.
 
 ## Challenges
 As we are both new to android programing, we meet tremendous challenges:
-            first challenge is to learn android studio and get familiar with this brand programming environment;
-            second challenge is to get familiar with GitHub which we used later for monitoring progress and version control;
-            this google-API-signIn idea is new to us, we discussed the logic for several times to figure out how it works;
-            
+```
+            - first challenge is to learn android studio and get familiar with this brand programming environment;
+            - leanring .xml language consumes us some time, this is the first time we use .xml language;
+            - second challenge is to get familiar with GitHub which we used later for monitoring progress and version control;
+            - this google-API-signIn idea is new to us, we discussed the logic for several times to figure out how it works;
+            - implement google map is not a big problem, there are plenty of resources online.
+            - it takes us some time to figure out how to talk with professor's sever, sine we also need to under stand the MySQL code
+            - we spend a lot of time trying to figure out how to calculate the orientation of the tag, this is chanllenging;
+            - the biggest challenge is how to manage our time to finish this project but not affecting too much of other important                        things, such as learnign course materials, studying other courses and doing research. 
+```
 
 ## Improvement
 
+There are several improvement (suggestions) for future works:
 
+            - using a comercial sever rather than local, private server, by doing this, we can pulish our app and people around the                         world can play with it.
+            - we need to improve the UI of this app, since we are a little bit short of time, we are more concentrating on the                              functionality rather than user friendly.
+            - the background of collecting tag should be changed from black to realtime view of the camera.
 
 
 
