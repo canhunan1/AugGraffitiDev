@@ -31,6 +31,15 @@ Step 3: Walking around ASU campus and find tags! Tags within 50m of your current
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692833/e7e49de6-7f51-11e6-9b28-32f08f4c4463.JPG) Map screen with tags
 
+![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371421/b761fd94-9167-11e6-9a13-476f001ebe97.png) Placing tag screen
+
+![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371424/baa7c1a0-9167-11e6-87f6-009c14226ed8.png) Collecting tag screen
+
+![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371425/bcc8576a-9167-11e6-90d8-63aeecc023b1.png) Gallery screen-1
+
+![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371426/be4e61f6-9167-11e6-83e6-18324d97940f.png) Gallery screen-2
+
+
 ## App Details
 This app is developed in Android Studio. The entire codes is composed of two major parts - .xml and .java file. The .xml files define the layouts of user interface while the .java files form the backbone of this application and enable the functionalies.
 
