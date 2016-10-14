@@ -782,8 +782,28 @@ private void setUpList(String[] imgUrl){
 ```
 
 ## Strategy
+1. We split the work into half, one person focuses on coding and the other person focuses on finding resources, cleaning codes and writing documentation.
+2. We check our progress week by week, and make sure we can finish the project. We made several internal check points:
+            learning basics of android studio;
+            learning GitHub;
+            finishing the front page design of the app;
+            implementing google login;
+            talking with sever;
+            implementing google map;
+            place a marker on google map;
+            implementing camera;
+            implementing screen drawing with camera backgound;
+            saving Base64 image format;
+            control sensors;
+            retrieve data from sever;
+After completing all the check points, we successfully designed the app.
 
 ## Challenges
+As we are both new to android programing, we meet tremendous challenges:
+            first challenge is to learn android studio and get familiar with this brand programming environment;
+            second challenge is to get familiar with GitHub which we used later for monitoring progress and version control;
+            this google-API-signIn idea is new to us, we discussed the logic for several times to figure out how it works;
+            
 
 ## Improvement
 
