@@ -31,9 +31,15 @@ Step 3: Walking around ASU campus and find tags! Tags within 50m of your current
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/18692833/e7e49de6-7f51-11e6-9b28-32f08f4c4463.JPG) Map screen with tags
 
+Step 4: This screen is invoked when clicking the "P" marker in the google map screen. Once the screen is opened, the camera is opened, and you can draw anything you like by simply tapping and dragging on screen. After drawing, you can send your draw (with the camera background) to sever by clicking the "COMMIT" button located at the bottom.
+
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371421/b761fd94-9167-11e6-9a13-476f001ebe97.png) Placing tag screen
 
+Step 5: This Collecting Tag screen is invoked when you tap the "C" tag on google map screen. In this screen, the up-right shows the tag image drawn by somebody else, by changing the distance, orientation of the device's screen, this image will change correspondingly. The image will be saved in gallery when you tap the "COLLECT" button on the bottom. Unfortunately, the image's background is black, and we couldn't figure out how to use real picture as the image's background.
+
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371424/baa7c1a0-9167-11e6-87f6-009c14226ed8.png) Collecting tag screen
+
+Step 6: The two picture below show the gallary. When you click the "GALLERY" button on google map screen. You will be directed to the "Gallery screen-1", it lists all the tags you have collected by listing the urls. By clicking any url, you will be directed to "Gallery screen-2" which shows the actual tag image.
 
 ![alt tag](https://cloud.githubusercontent.com/assets/21367763/19371425/bcc8576a-9167-11e6-90d8-63aeecc023b1.png) Gallery screen-1
 
