@@ -784,6 +784,7 @@ private void setUpList(String[] imgUrl){
 ## Strategy
 1. We split the work into half, one person focuses on coding and the other person focuses on finding resources, cleaning codes and writing documentation.
 2. We check our progress week by week, and make sure we can finish the project. We made several internal check points:
+```
             - learning basics of android studio;
             - learning GitHub;
             - finishing the front page design of the app;
@@ -796,6 +797,7 @@ private void setUpList(String[] imgUrl){
             - saving Base64 image format;
             - control sensors;
             - retrieve data from sever;
+```
 After completing all the check points, we successfully designed the app.
 
 ## Challenges
