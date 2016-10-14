@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 /**
  * Created by Jianan on 9/22/2016.
+ * This class is used to setup the surfaceview to display the camera view on the screen
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -32,7 +33,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         initSurfaceHolder();
     }
 
-    @SuppressWarnings("deprecation") // needed for < 3.0
     private void initSurfaceHolder() {
         holder = getHolder();
         holder.addCallback(this);
@@ -43,7 +43,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceCreated(SurfaceHolder holder) {
         initCamera(holder);
     }
-
+    /*
+    * Initiate the camera. To start the camera view.
+    * */
     private void initCamera(SurfaceHolder holder) {
         try {
             camera.setPreviewDisplay(holder);
