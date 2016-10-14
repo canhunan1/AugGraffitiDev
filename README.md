@@ -73,6 +73,65 @@ The .xml files are stored in ```app\src\main\res\layout``` folder:
    android:layout_weight="1.21" />
 ```
 
+- ```activity_place.xml``` - decribes the tag placing screen, in which the camera and drawing is implemented in two seperated fullscreen views
+
+```
+<com.example.jianan.auggraffiti.CameraPreview
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
+```
+```
+ <com.example.jianan.auggraffiti.Graphique
+        android:id="@+id/graph"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/button_save"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+```
+
+- ```activity_collect.xml``` - decribes the tag collecting screen, in which the camera and tagImage is implemented in fullscreen view and ImageView, respectively.
+
+```
+<com.example.jianan.auggraffiti.CameraPreview
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
+
+    <ImageView
+        android:id="@+id/tag_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="300dp" />
+```
+
+- ```activity_gallery.xml``` - decribes the gallery screen, in which collected images are stored and shown in a ```ListView```.
+
+```
+<ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:choiceMode="singleChoice" />
+```
+
+
+
 The .java files are stored in ```app\src\main\java\com\example\jianan\auggraffiti``` folder:
 
 
